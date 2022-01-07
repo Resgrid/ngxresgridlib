@@ -1,0 +1,26 @@
+name: Release npm package
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: npm install -g @angular/cli
+      - working-directory: projects/ngx-resgrid-apps-shared
+      - run: npm ci
+      - working-directory: /
+      - run: npm ci
+      - run: ng build NgxResgridLib --configuration production
+      - run: npm run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
