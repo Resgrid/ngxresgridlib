@@ -11,6 +11,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "12.x"
+      - run: npm install -g @angular/cli
       - run: npm ci
         working-directory: ./projects/ngx-resgrid-apps-shared
       - run: npm build --if-present
