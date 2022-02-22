@@ -17,5 +17,5 @@ jobs:
         working-directory: ./projects/ngx-resgrid-apps-shared
       - run: npm build --if-present
         working-directory: ./projects/ngx-resgrid-apps-shared
-      - run: ng test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - run: npm run testci
         working-directory: ./projects/ngx-resgrid-apps-shared

@@ -32,6 +32,7 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ]
     },
+    failOnEmptyTestSuite: false,
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
