@@ -1,6 +1,6 @@
 module.exports = {
     pkgRoot: 'dist/ngx-resgridlib/',
-    branches: ['master', { name: 'beta', prerelease: true }],
+    branches: ['release', { name: 'release', prerelease: false }],
     plugins: [
         "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
