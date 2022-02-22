@@ -1,4 +1,4 @@
-name: Release npm package
+name: Release
 
 on:
   push:
@@ -15,9 +15,9 @@ jobs:
         with:
           node-version: "12.x"
       - run: npm install -g @angular/cli
-      - working-directory: projects/ngx-resgrid-apps-shared
+        working-directory: projects/ngx-resgrid-apps-shared
       - run: npm ci
-      - working-directory: /
+        working-directory: /
       - run: npm ci
       - run: ng build NgxResgridLib --configuration production
       - run: npm run semantic-release
