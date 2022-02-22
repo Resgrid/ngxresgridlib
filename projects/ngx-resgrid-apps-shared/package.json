@@ -1,11 +1,34 @@
 {
   "name": "@resgrid/ngx-resgridlib",
   "version": "0.0.0-development",
+  "author": "Resgrid, LLC.",
+  "homepage": "https://resgrid.com",
+  "description": "Angular 10+ library for interacting with the v4 Resgrid api",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Resgrid/ngxresgridlib.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Resgrid/ngxresgridlib/issues"
+  },
+  "keywords": [
+    "angular",
+    "resgrid",
+    "cad",
+    "dispatch",
+    "police",
+    "firefighter",
+    "ems",
+    "emergency",
+    "avl"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
+    "testci": "ng test -- --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "semantic-release": "semantic-release"
