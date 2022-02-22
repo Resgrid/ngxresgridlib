@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - master
+      - release
 
 jobs:
   release:
@@ -15,10 +15,9 @@ jobs:
         with:
           node-version: "12.x"
       - run: npm install -g @angular/cli
-        working-directory: projects/ngx-resgrid-apps-shared
       - run: npm ci
-        working-directory: /
       - run: npm ci
+        working-directory: ./projects/ngx-resgrid-apps-shared
       - run: ng build NgxResgridLib --configuration production
       - run: npm run semantic-release
         env:
