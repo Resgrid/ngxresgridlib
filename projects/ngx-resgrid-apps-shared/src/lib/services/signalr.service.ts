@@ -89,9 +89,11 @@ export class SignalRService {
   //
   private subjects = new Array<ChannelSubject>();
 
-  constructor(private config: ResgridConfig,
-              private events: EventsService,
-              private consts: Consts) {
+  constructor(
+    private config: ResgridConfig,
+    private events: EventsService,
+    private consts: Consts
+  ) {
     // Set up our observables
     //
     //this.connectionState$ = this.connectionStateSubject.asObservable().share();
@@ -129,13 +131,65 @@ export class SignalRService {
           .withUrl(this.config.channelUrl + this.config.channelHubName)
           .build();
 
+        // SignalR Event Listeners
+        this.hubConnection.on('personnelStatusUpdated', (data: any) => {
+          console.log('PersonnelStatusUpdated');
+          this.events.publishEvent(
+            this.consts.SIGNALR_EVENTS.PERSONNEL_STATUS_UPDATED,
+            data
+          );
+        });
+
+        this.hubConnection.on('personnelStaffingUpdated', (data: any) => {
+          console.log('PersonnelStaffingUpdated');
+          this.events.publishEvent(
+            this.consts.SIGNALR_EVENTS.PERSONNEL_STAFFING_UPDATED,
+            data
+          );
+        });
+
+        this.hubConnection.on('unitStatusUpdated', (data: any) => {
+          console.log('UnitStatusUpdated');
+          this.events.publishEvent(
+            this.consts.SIGNALR_EVENTS.UNIT_STATUS_UPDATED,
+            data
+          );
+        });
+
+        this.hubConnection.on('callsUpdated', (data: any) => {
+          console.log('CallsUpdated');
+          this.events.publishEvent(
+            this.consts.SIGNALR_EVENTS.CALLS_UPDATED,
+            data
+          );
+        });
+
+        this.hubConnection.on('callAdded', (data: any) => {
+          console.log('CallAdded');
+          this.events.publishEvent(this.consts.SIGNALR_EVENTS.CALL_ADDED, data);
+        });
+
+        this.hubConnection.on('callClosed', (data: any) => {
+          console.log('CallClosed');
+          this.events.publishEvent(
+            this.consts.SIGNALR_EVENTS.CALL_CLOSED,
+            data
+          );
+        });
+
+        this.hubConnection.on('onConnected', (data: any) => {
+          console.log(`onConnected with ${data}`);
+          //this.widgetPubSub.emitSignalRConnected(data);
+        });
+
         this.hubConnection
           .start()
           .then(() => {
             console.log('Connection started');
             this.connectionStateObserver?.next(ConnectionState.Connected);
 
-            this.hubConnection?.invoke('connect', parseInt(departmentId))
+            this.hubConnection
+              ?.invoke('connect', parseInt(departmentId))
               .then(() => {
                 console.log(
                   `Successfully subscribed to Connect channel with ${departmentId}`
@@ -154,50 +208,67 @@ export class SignalRService {
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
             this.errorSubject.next(err);
           });
-
-        // SignalR Event Listeners
-        this.hubConnection.on('personnelStatusUpdated', (data: any) => {
-          console.log('PersonnelStatusUpdated');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.PERSONNEL_STATUS_UPDATED, data);
-        });
-
-        this.hubConnection.on('personnelStaffingUpdated', (data: any) => {
-          console.log('PersonnelStaffingUpdated');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.PERSONNEL_STAFFING_UPDATED, data);
-        });
-
-        this.hubConnection.on('unitStatusUpdated', (data: any) => {
-          console.log('UnitStatusUpdated');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.UNIT_STATUS_UPDATED, data);
-        });
-
-        this.hubConnection.on('callsUpdated', (data: any) => {
-          console.log('CallsUpdated');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.CALLS_UPDATED, data);
-        });
-
-        this.hubConnection.on('callAdded', (data: any) => {
-          console.log('CallAdded');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.CALL_ADDED, data);
-        });
-
-        this.hubConnection.on('callClosed', (data: any) => {
-          console.log('CallClosed');
-          this.events.publishEvent(this.consts.SIGNALR_EVENTS.CALL_CLOSED, data);
-        });
-
-        this.hubConnection.on('onConnected', (data: any) => {
-          console.log(`onConnected with ${data}`);
-          //this.widgetPubSub.emitSignalRConnected(data);
-        });
       } catch (ex) {
         console.log(ex);
       }
     }
   }
 
+  public restart(departmentId: string): void {
+    if (this.hubConnection && this.started === false) {
+      try {
+        this.hubConnection
+          .start()
+          .then(() => {
+            console.log('Connection started');
+            this.connectionStateObserver?.next(ConnectionState.Connected);
+
+            this.hubConnection
+              ?.invoke('connect', parseInt(departmentId))
+              .then(() => {
+                console.log(
+                  `Successfully subscribed to Connect channel with ${departmentId}`
+                );
+              })
+              .catch((error: any) => {
+                console.log(
+                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`
+                );
+              });
+
+            this.started = true;
+          })
+          .catch((err) => {
+            console.log('Error while starting connection: ' + err);
+            this.connectionStateObserver?.next(ConnectionState.Disconnected);
+            this.started = false;
+            this.errorSubject.next(err);
+          });
+      } catch (ex) {
+        console.log(ex);
+      }
+    }
+  }
+
+  public stop() {
+    if (this.hubConnection) {
+      this.hubConnection.stop().then(() => {
+        console.log('Connection stopped');
+        this.connectionStateObserver?.next(ConnectionState.Disconnected);
+        this.started = false;
+      })
+      .catch((err) => {
+        console.log('Error while starting connection: ' + err);
+        this.connectionStateObserver?.next(ConnectionState.Disconnected);
+        this.started = false;
+        this.errorSubject.next(err);
+      });
+    }
+  }
+
   public subscribeToDepartment(linkId: number): void {
-    this.hubConnection?.invoke('SubscribeToDepartmentLink', linkId)
+    this.hubConnection
+      ?.invoke('SubscribeToDepartmentLink', linkId)
       .then(() =>
         console.log(`Successfully subscribed to department link with ${linkId}`)
       )
@@ -212,7 +283,10 @@ export class SignalRService {
    * Get an observable that will contain the data associated with a specific
    * channel
    * */
-  private sub(channel: string, data?: string): Observable<ChannelEvent> | undefined {
+  private sub(
+    channel: string,
+    data?: string
+  ): Observable<ChannelEvent> | undefined {
     // Try to find an observable that we already created for the requested
     //  channel
     //
@@ -249,7 +323,8 @@ export class SignalRService {
     //
     this.starting$.subscribe(
       () => {
-        this.hubConnection?.invoke(channel, data)
+        this.hubConnection
+          ?.invoke(channel, data)
           .then(() =>
             console.log(
               `Successfully subscribed to ${channel} channel with ${data}`
