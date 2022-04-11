@@ -15,7 +15,7 @@ let getBaseUrl = (): string => {
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0}),
+    NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0, isMobileApp: false}),
   ],
   providers: [],
   bootstrap: [AppComponent]

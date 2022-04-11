@@ -17,4 +17,19 @@ export class CustomStatusesService {
     const url = this.config.apiUrl + '/CustomStatuses/GetAllCustomStatuses';
     return this.http.get<CustomStatusesResult>(url);
   }
+
+  public getActivePersonnelStatuses(): Observable<CustomStatusesResult> {
+    const url = this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStatuses';
+    return this.http.get<CustomStatusesResult>(url);
+  }
+
+  public getActivePersonnelStaffingLevels(): Observable<CustomStatusesResult> {
+    const url = this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStaffingLevels';
+    return this.http.get<CustomStatusesResult>(url);
+  }
+
+  public getActiveUnitStatesLevels(): Observable<CustomStatusesResult> {
+    const url = this.config.apiUrl + '/CustomStatuses/GetActiveUnitStatesLevels';
+    return this.http.get<CustomStatusesResult>(url);
+  }
 }

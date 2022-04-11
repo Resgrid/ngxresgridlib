@@ -167,7 +167,12 @@ export class AuthService {
 
     params = params.set('grant_type', grantType);
     // params = params.append('scope', 'openid profile email dataEventRecords offline_access');
-    params = params.append('scope', 'openid profile offline_access');
+
+    if (this.config.isMobileApp) {
+      params = params.append('scope', 'openid profile offline_access mobile');
+    } else {
+      params = params.append('scope', 'openid profile offline_access');
+    }
 
     if (data.refresh_token && data.refresh_token.length > 0) {
       params = params.append('refresh_token', data.refresh_token);

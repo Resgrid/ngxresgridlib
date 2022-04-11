@@ -12,7 +12,7 @@ let getBaseUrl = (): string => {
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0}),],
+      imports: [HttpClientTestingModule, NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0, isMobileApp: false}),],
       declarations: [
         AppComponent,
       ],
