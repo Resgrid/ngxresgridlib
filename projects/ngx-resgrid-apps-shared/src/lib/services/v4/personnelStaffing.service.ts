@@ -6,6 +6,10 @@ import { SavePersonsStaffingsInput } from '../../models/v4/personnelStaffing/sav
 import { SavePersonsStaffingsResult } from '../../models/v4/personnelStaffing/savePersonsStaffingsResult';
 import { SavePersonStaffingInput } from '../../models/v4/personnelStaffing/savePersonStaffingInput';
 import { SavePersonStaffingResult } from '../../models/v4/personnelStaffing/savePersonStaffingResult';
+import { SavePersonStatusInput } from '../../models/v4/personnelStatuses/savePersonStatusInput';
+import { SavePersonStatusResult } from '../../models/v4/personnelStatuses/savePersonStatusResult';
+import { SavePersonsStatusesInput } from '../../models/v4/personnelStatuses/savePersonsStatusesInput';
+import { SavePersonsStatusesResult } from '../../models/v4/personnelStatuses/savePersonsStatusesResult';
 
 
 @Injectable({
