@@ -6,6 +6,7 @@ import { SavePersonsStaffingsInput } from '../../models/v4/personnelStaffing/sav
 import { SavePersonsStaffingsResult } from '../../models/v4/personnelStaffing/savePersonsStaffingsResult';
 import { SavePersonStaffingInput } from '../../models/v4/personnelStaffing/savePersonStaffingInput';
 import { SavePersonStaffingResult } from '../../models/v4/personnelStaffing/savePersonStaffingResult';
+import { GetCurrentStaffingResult } from '../../models/v4/personnelStaffing/getCurrentStaffingResult';
 
 
 @Injectable({
@@ -16,6 +17,11 @@ export class PersonnelStaffingService {
     public http: HttpClient,
     private config: ResgridConfig
   ) {}
+
+  public getCurrentStatffing(userId: string): Observable<GetCurrentStaffingResult> {
+    const url = this.config.apiUrl + `/PersonnelStaffing/GetCurrentStatffing?userId=${userId}`;
+    return this.http.get<GetCurrentStaffingResult>(url);
+  }
 
   public savePersonStatus(data: SavePersonStaffingInput): Observable<SavePersonStaffingResult> {
     const url = this.config.apiUrl + '/PersonnelStaffing/SavePersonStaffing';
