@@ -101,6 +101,7 @@ export * from './lib/models/v4/health/healthResult';
 export * from './lib/models/v4/health/healthResultData';
 export * from './lib/models/v4/mapping/getMapDataAndMarkersData';
 export * from './lib/models/v4/mapping/getMapDataAndMarkersResult';
+export * from './lib/models/v4/personnel/getAllPersonnelInfosResult';
 export * from './lib/models/v4/personnel/personnelInfoResult';
 export * from './lib/models/v4/personnel/personnelInfoResultData';
 export * from './lib/models/v4/personnelStatuses/getCurrentStatusResult';

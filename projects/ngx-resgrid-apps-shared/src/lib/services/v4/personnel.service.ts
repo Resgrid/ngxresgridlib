@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { PersonnelInfoResult } from '../../models/v4/personnel/personnelInfoResult';
+import { GetAllPersonnelInfosResult } from '../../models/v4/personnel/getAllPersonnelInfosResult';
 
 
 @Injectable({
@@ -17,5 +18,16 @@ export class PersonnelService {
   public getPersonnelInfo(userId: string): Observable<PersonnelInfoResult> {
     const url = this.config.apiUrl + `/Personnel/GetPersonnelInfo?userId=${userId}`;
     return this.http.get<PersonnelInfoResult>(url);
+  }
+
+  public getAllPersonnelInfos(filter: string): Observable<GetAllPersonnelInfosResult> {
+    let url = '';
+    
+    if (filter) {
+      this.config.apiUrl + `/Personnel/GetAllPersonnelInfos?activeFilter=${encodeURIComponent(filter)}`;
+    } else {
+      this.config.apiUrl + `/Personnel/GetAllPersonnelInfos`;
+    }
+    return this.http.get<GetAllPersonnelInfosResult>(url);
   }
 }
