@@ -24,9 +24,9 @@ export class PersonnelService {
     let url = '';
     
     if (filter) {
-      this.config.apiUrl + `/Personnel/GetAllPersonnelInfos?activeFilter=${encodeURIComponent(filter)}`;
+      url = this.config.apiUrl + `/Personnel/GetAllPersonnelInfos?activeFilter=${encodeURIComponent(filter)}`;
     } else {
-      this.config.apiUrl + `/Personnel/GetAllPersonnelInfos`;
+      url = this.config.apiUrl + `/Personnel/GetAllPersonnelInfos`;
     }
     return this.http.get<GetAllPersonnelInfosResult>(url);
   }

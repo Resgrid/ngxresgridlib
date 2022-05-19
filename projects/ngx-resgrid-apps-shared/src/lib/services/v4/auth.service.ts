@@ -7,6 +7,7 @@ import {
   Observable,
   of,
   Subscription,
+  throwError,
 } from 'rxjs';
 import {
   catchError,
@@ -204,10 +205,17 @@ export class AuthService {
           this.storeToken(res);
           this.updateState({ authReady: true, tokens: res, profile });
 
-          this.refreshTokenSubject.next(profile);
           this.isRefreshing = false;
+          this.refreshTokenSubject.next(profile);
 
           return profile;
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(null);
+
+          //this.authService.logout();
+          return throwError(err);
         })
       );
   }
