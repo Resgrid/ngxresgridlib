@@ -28,6 +28,7 @@ export class PersonnelService {
     } else {
       url = this.config.apiUrl + `/Personnel/GetAllPersonnelInfos`;
     }
+    
     return this.http.get<GetAllPersonnelInfosResult>(url);
   }
 }
