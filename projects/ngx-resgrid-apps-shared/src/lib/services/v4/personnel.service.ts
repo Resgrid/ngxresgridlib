@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { PersonnelInfoResult } from '../../models/v4/personnel/personnelInfoResult';
 import { GetAllPersonnelInfosResult } from '../../models/v4/personnel/getAllPersonnelInfosResult';
+import { GetPersonnelFilterOptionsResult } from '../../models/v4/personnel/getPersonnelFilterOptionsResult';
 
 
 @Injectable({
@@ -30,5 +31,10 @@ export class PersonnelService {
     }
     
     return this.http.get<GetAllPersonnelInfosResult>(url);
+  }
+
+  public getPersonnelFilterOptions(): Observable<GetPersonnelFilterOptionsResult> {
+    const url = this.config.apiUrl + `/Personnel/GetPersonnelFilterOptions`;
+    return this.http.get<GetPersonnelFilterOptionsResult>(url);
   }
 }
