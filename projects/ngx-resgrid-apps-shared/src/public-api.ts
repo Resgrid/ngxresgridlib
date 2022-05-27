@@ -137,6 +137,7 @@ export * from './lib/models/v4/unitRoles/activeUnitRolesResult';
 export * from './lib/models/v4/units/getUnitFilterOptionsResult';
 export * from './lib/models/v4/units/unitInfoResult';
 export * from './lib/models/v4/units/unitInfoResultData';
+export * from './lib/models/v4/units/unitRoleData';
 export * from './lib/models/v4/units/unitResultData';
 export * from './lib/models/v4/units/unitsResult';
 export * from './lib/models/v4/unitStatus/saveUnitStatusInput';

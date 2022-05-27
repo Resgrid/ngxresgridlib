@@ -1,3 +1,5 @@
+import { UnitRoleData } from "./unitRoleData";
+
 export class UnitInfoResultData {
     public UnitId: string = '';
     public DepartmentId: string = '';
@@ -15,8 +17,10 @@ export class UnitInfoResultData {
     public CurrentDestinationName: string = '';
     public CurrentStatusId: string = '';
     public CurrentStatus: string = '';
+    public CurrentStatusColor: string = '';
     public CurrentStatusTimestampUtc: string = '';
     public Latitude: string = '';
     public Longitude: string = '';
     public Note: string = '';
+    public Roles: UnitRoleData[] = [];
 }
