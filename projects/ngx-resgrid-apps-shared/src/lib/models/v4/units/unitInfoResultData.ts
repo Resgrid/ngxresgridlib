@@ -18,6 +18,7 @@ export class UnitInfoResultData {
     public CurrentStatusId: string = '';
     public CurrentStatus: string = '';
     public CurrentStatusColor: string = '';
+    public CurrentStatusTimestamp: string = '';
     public CurrentStatusTimestampUtc: string = '';
     public Latitude: string = '';
     public Longitude: string = '';
