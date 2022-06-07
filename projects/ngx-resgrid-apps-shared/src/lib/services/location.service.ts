@@ -9,11 +9,11 @@ import {
 } from 'rxjs';
 import { map, multicast, switchMap } from 'rxjs/operators';
 import { GpsLocation } from '../models/gpsLocation';
-import { Coordinate } from 'tsgeo/Coordinate';
-import { Vincenty } from 'tsgeo/Distance/Vincenty';
 import { WindowRef } from './window.service';
 import { DocumentRef } from './document.service';
 import { ResgridConfig } from '../resgrid-config';
+import { Coordinate } from '../models/geo/Coordinate';
+import { Vincenty } from '../models/geo/Distance/Vincenty';
 
 @Injectable({
   providedIn: 'root',

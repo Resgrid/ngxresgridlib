@@ -44,7 +44,8 @@ export class NgxResgridLibModule {
             config.channelUrl = configuration.channelUrl;
             config.channelHubName = configuration.channelHubName;
             config.logLevel = configuration.logLevel;
-
+            config.isMobileApp = configuration.isMobileApp;
+            
             return (config);
           }
         }
