@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
-import { AutofillsResult } from '../../models/v4/autofills/autofillsResult';
 import { CalendarItemsResult } from '../../models/v4/calendar/calendarItemsResult';
 import { CalendarItemResult } from '../../models/v4/calendar/calendarItemResult';
 import { CalendarItemTypesResult } from '../../models/v4/calendar/calendarItemTypesResult';
@@ -42,9 +41,9 @@ export class CalendarService {
     const url = this.config.apiUrl + `/Calendar/SetCalendarAttendingStatus`;
 
     return this.http.post<SetCalendarAttendingResult>(url,
-        { callId: callId,
-          note: note,
-          type: type
+        { CallId: callId,
+          Note: note,
+          Type: type
         }
       );
   }

@@ -3,6 +3,5 @@
   "dest": "../../dist/ngx-resgridlib",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "allowedNonPeerDependencies": ["@microsoft/signalr","jwt-decode","leaflet","tsgeo"]
+  }
 }
