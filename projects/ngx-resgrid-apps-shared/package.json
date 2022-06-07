@@ -39,12 +39,15 @@
   "peerDependencies": {
     "@angular/common": ">=11.0.0",
     "@angular/core": ">=11.0.0",
-    "leaflet": "^1.7.1",
-    "tsgeo": "^1.2.2",
-    "@microsoft/signalr": "^5.0.9",
-    "jwt-decode": "^3.1.2"
+    "rxjs": "^6.5.3 || ^7.4.0",
+    "@angular/platform-browser": ">=11.0.0",
+    "@angular/platform-browser-dynamic": ">=11.0.0"
   },
   "dependencies": {
+    "@microsoft/signalr": "^5.0.9",
+    "jwt-decode": "^3.1.2",
+    "leaflet": "^1.7.1",
+    "tsgeo": "^1.2.2",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
