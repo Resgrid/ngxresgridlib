@@ -1,5 +1,3 @@
-import { FactoryTarget } from "@angular/compiler";
-
 export class CalendarItemResultData  {
     public CalendarItemId: string = '';
     public Title: string = '';
