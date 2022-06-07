@@ -13,4 +13,5 @@ export class MapMakerInfoData  {
     public ImagePath: string = '';
     public InfoWindowContent: string = '';
     public Color: string = '';
+    public Type: number = 0;
 }
