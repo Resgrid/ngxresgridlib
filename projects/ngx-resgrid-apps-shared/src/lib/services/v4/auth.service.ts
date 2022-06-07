@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  from,
   interval,
   Observable,
   of,
@@ -12,9 +11,7 @@ import {
 import {
   catchError,
   filter,
-  flatMap,
   map,
-  mergeMap,
   switchMap,
   take,
   tap,
