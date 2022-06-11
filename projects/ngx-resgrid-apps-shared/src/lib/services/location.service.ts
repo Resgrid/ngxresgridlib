@@ -55,14 +55,18 @@ export class LocationService {
     );
   }
 
-  private geocode(request: google.maps.GeocoderRequest): Observable<google.maps.GeocoderResult[]> {
+  private geocode(
+    request: google.maps.GeocoderRequest
+  ): Observable<google.maps.GeocoderResult[]> {
     return this.geocoder$.pipe(
       switchMap((geocoder) => this._getGoogleResults(geocoder, request))
     );
   }
 
   public getAddressFromLocation(location: GpsLocation) {
-    return this.geocode({ location: new google.maps.LatLng(location.Latitude, location.Longitude) }).pipe(
+    return this.geocode({
+      location: new google.maps.LatLng(location.Latitude, location.Longitude),
+    }).pipe(
       map((data) => {
         if (data && data.length > 0) {
           //console.log(JSON.stringify(data));
@@ -88,8 +92,6 @@ export class LocationService {
       })
     );
 
-
-
     ////var geocoder = new Geocoder({
     //  key: environment.osmMapKey,
     //});
@@ -99,9 +101,9 @@ export class LocationService {
     //  geocoder.geocode(address).then(function (results) {
     //    if (results) {
     //    //  console.log(JSON.stringify(results));
-          //console.log(results.features[0]);
-          //return results;
-          //return that.parseMapTilerResults(results);
+    //console.log(results.features[0]);
+    //return results;
+    //return that.parseMapTilerResults(results);
     //      let gpsLocation = that.parseMapTilerResults(results);
     //      observer.next(gpsLocation);
     //      observer.complete();
@@ -112,13 +114,23 @@ export class LocationService {
     //});
   }
 
+  public getDistanceBetweenTwoPoints(
+    point1: GpsLocation,
+    point2: GpsLocation
+  ): number {
+    let coordinate1 = new Coordinate(point1.Latitude, point1.Longitude);
+    let coordinate2 = new Coordinate(point2.Latitude, point2.Longitude);
+
+    let calculator = new Vincenty();
+    return calculator.getDistance(coordinate1, coordinate2);
+  }
+
   private parseMapTilerResults(results: any): GpsLocation | null {
     if (results && results.features && results.features.length > 0) {
-
       for (let index = 0; index < results.features.length; index++) {
         const feature = results.features[index];
-        
-        if (this.doesMapTilerPlaceTypeContain("street", feature.place_type)) {
+
+        if (this.doesMapTilerPlaceTypeContain('street', feature.place_type)) {
           if (feature.center && feature.center.length === 2) {
             return new GpsLocation(feature.center[1], feature.center[0]);
           }
@@ -146,9 +158,7 @@ export class LazyGoogleMapsLoader {
   protected readonly _SCRIPT_ID: string = 'googleMapsApiScript';
   protected readonly callbackName: string = `lazyMapsAPILoader`;
 
-  constructor(private config: ResgridConfig) {
-
-  }
+  constructor(private config: ResgridConfig) {}
 
   load(): Promise<void> {
     //const window = this._windowRef.nativeWindow() as any;
@@ -162,8 +172,7 @@ export class LazyGoogleMapsLoader {
     }
 
     // this can happen in HMR situations or Stackblitz.io editors.
-    const scriptOnPage = document
-      .getElementById(this._SCRIPT_ID);
+    const scriptOnPage = document.getElementById(this._SCRIPT_ID);
     if (scriptOnPage) {
       this._assignScriptLoadingPromise(scriptOnPage);
       return this._scriptLoadingPromise;
