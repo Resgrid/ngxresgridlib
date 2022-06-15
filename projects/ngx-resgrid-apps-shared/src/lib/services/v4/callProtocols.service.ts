@@ -14,7 +14,7 @@ export class CallProtocolsService {
     private config: ResgridConfig
   ) {}
 
-  public getAllCallPriorites(): Observable<CallProtocolsResult> {
+  public getAllCallProtocols(): Observable<CallProtocolsResult> {
     const url = this.config.apiUrl + '/CallProtocols/GetAllCallProtocols';
     return this.http.get<CallProtocolsResult>(url);
   }
