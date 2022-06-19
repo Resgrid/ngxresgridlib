@@ -23,6 +23,8 @@ export class CalendarItemResultData  {
     public IsAdminOrCreator: boolean = false;
     public CreatorUserId: string = '';
     public Attending: boolean = false;
+    public TypeName: string = '';
+    public TypeColor: string = '';
 
     public Attendees: CalendarItemResultAttendeeData[] = [];
 }
