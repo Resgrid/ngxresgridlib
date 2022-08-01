@@ -37,11 +37,11 @@ export class CalendarService {
     return this.http.get<CalendarItemTypesResult>(url);
   }
 
-  public setCalendarAttendingStatus(callId: string, note: string, type: number): Observable<SetCalendarAttendingResult> {
+  public setCalendarAttendingStatus(calendarEntityId: string, note: string, type: number): Observable<SetCalendarAttendingResult> {
     const url = this.config.apiUrl + `/Calendar/SetCalendarAttendingStatus`;
 
     return this.http.post<SetCalendarAttendingResult>(url,
-        { CallId: callId,
+        { CalendarEventId: calendarEntityId,
           Note: note,
           Type: type
         }
