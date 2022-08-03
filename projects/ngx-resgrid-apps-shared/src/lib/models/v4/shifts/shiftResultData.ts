@@ -1,3 +1,5 @@
+import { ShiftDaysResultData } from "./shiftDayResultData";
+
 export class ShiftResultData  {
     public ShiftId: string = '';
     public Name: string = '';
@@ -10,4 +12,6 @@ export class ShiftResultData  {
     public GroupCount: number = 0;
     public NextDay: string = '';
     public NextDayId: string = '';
+
+    public Days: ShiftDaysResultData[] = [];
 }
