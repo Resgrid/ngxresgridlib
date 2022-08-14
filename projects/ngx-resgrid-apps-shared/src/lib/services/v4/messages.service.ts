@@ -55,6 +55,6 @@ export class MessagesService {
 
   public deleteMessage(messageId: string): Observable<DeleteMessageResult> {
     const url = this.config.apiUrl + '/Messages/DeleteMessage?messageId=' + messageId;
-    return this.http.get<DeleteMessageResult>(url);
+    return this.http.delete<DeleteMessageResult>(url);
   }
 }
