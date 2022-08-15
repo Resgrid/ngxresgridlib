@@ -123,6 +123,8 @@ export * from './lib/models/v4/messages/messageResultData';
 export * from './lib/models/v4/messages/messagesResult';
 export * from './lib/models/v4/messages/respondToMessageResult';
 export * from './lib/models/v4/messages/sendMessageResult';
+export * from './lib/models/v4/messages/getRecipientsResult';
+export * from './lib/models/v4/messages/recipientsResultData';
 export * from './lib/models/v4/notes/notesResult';
 export * from './lib/models/v4/notes/noteResultData';
 export * from './lib/models/v4/personnel/filterResultData';
