@@ -8,6 +8,7 @@ import { SendMessageResult } from '../../models/v4/messages/sendMessageResult';
 import { MessageRecipientInput } from '../../models/v4/messages/messageRecipientInput';
 import { RespondToMessageResult } from '../../models/v4/messages/respondToMessageResult';
 import { DeleteMessageResult } from '../../models/v4/messages/deleteMessageResult';
+import { GetRecipientsResult } from '../../models/v4/messages/getRecipientsResult';
 
 
 @Injectable({
@@ -56,5 +57,10 @@ export class MessagesService {
   public deleteMessage(messageId: string): Observable<DeleteMessageResult> {
     const url = this.config.apiUrl + '/Messages/DeleteMessage?messageId=' + messageId;
     return this.http.delete<DeleteMessageResult>(url);
+  }
+
+  public getRecipients(disallowNoone: boolean): Observable<GetRecipientsResult> {
+    const url = this.config.apiUrl + '/Messages/GetRecipients?disallowNoone=' + disallowNoone;
+    return this.http.get<GetRecipientsResult>(url);
   }
 }
