@@ -59,8 +59,8 @@ export class MessagesService {
     return this.http.delete<DeleteMessageResult>(url);
   }
 
-  public getRecipients(disallowNoone: boolean): Observable<GetRecipientsResult> {
-    const url = this.config.apiUrl + '/Messages/GetRecipients?disallowNoone=' + disallowNoone;
+  public getRecipients(disallowNoone: boolean, includeUnits: boolean): Observable<GetRecipientsResult> {
+    const url = this.config.apiUrl + '/Messages/GetRecipients?disallowNoone=' + disallowNoone + '&includeUnits=' + includeUnits;
     return this.http.get<GetRecipientsResult>(url);
   }
 }
