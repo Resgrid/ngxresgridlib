@@ -9,10 +9,14 @@ export class PersonnelInfoResultData {
     public GroupId: string = '';
     public GroupName: string = '';
     public StatusId: string = '';
+    public Status: string = '';
+    public StatusColor: string = '';
     public StatusTimestamp: string = '';
     public StatusDestinationId: string = '';
     public StatusDestinationName: string = '';
     public StaffingId: string = '';
+    public Staffing: string = '';
+    public StaffingColor: string = '';
     public StaffingTimestamp: string = '';
     public Roles: string[] = [];
 }
