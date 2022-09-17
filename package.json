@@ -42,6 +42,7 @@
     "@angular/platform-browser": "~12.2.8",
     "@angular/platform-browser-dynamic": "~12.2.8",
     "@angular/router": "~12.2.8",
+    "@types/geojson": "^7946.0.10",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

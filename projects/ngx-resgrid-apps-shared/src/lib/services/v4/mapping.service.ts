@@ -18,4 +18,9 @@ export class MappingService {
     const url = this.config.apiUrl + '/Mapping/GetMapDataAndMarkers';
     return this.http.get<GetMapDataAndMarkersResult>(url);
   }
+
+  public getMayLayers(type: number): Observable<GetMapDataAndMarkersResult> {
+    const url = this.config.apiUrl + '/Mapping/GetMayLayers?type=' + type;
+    return this.http.get<GetMapDataAndMarkersResult>(url);
+  }
 }

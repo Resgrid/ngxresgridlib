@@ -116,6 +116,8 @@ export * from './lib/models/v4/health/healthResult';
 export * from './lib/models/v4/health/healthResultData';
 export * from './lib/models/v4/mapping/getMapDataAndMarkersData';
 export * from './lib/models/v4/mapping/getMapDataAndMarkersResult';
+export * from './lib/models/v4/mapping/getMapLayersResult';
+export * from './lib/models/v4/mapping/getMapLayersResultData';
 export * from './lib/models/v4/messages/deleteMessageResult';
 export * from './lib/models/v4/messages/messageRecipientInput';
 export * from './lib/models/v4/messages/messageResult';
