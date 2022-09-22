@@ -3,4 +3,5 @@ export class GetConfigResultData  {
     public GoogleMapsKey: string = '';
     public LoggingKey: string = '';
     public MapUrl: string = '';
+    public MapAttribution: string = '';
 }
