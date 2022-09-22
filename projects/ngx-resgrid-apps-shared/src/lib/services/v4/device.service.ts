@@ -27,4 +27,19 @@ export class DeviceService {
     const url = this.config.apiUrl + '/Devices/UnRegisterUnitDevice?deviceUuid=' + deviceId;
     return this.http.delete<PushRegistrationResult>(url);
   }
+
+  public RegisterPush(token: string, deviceId: string, platform: number): Observable<PushRegistrationResult> {
+    const url = this.config.apiUrl + '/Devices/RegisterDevice';
+
+    return this.http.post<PushRegistrationResult>(url, {
+      Platform: platform,
+      Token: token,
+      DeviceUuid: deviceId
+    });
+  }
+
+  public UnRegisterPush(deviceId: string): Observable<PushRegistrationResult> {
+    const url = this.config.apiUrl + '/Devices/UnRegisterDevice?deviceUuid=' + deviceId;
+    return this.http.delete<PushRegistrationResult>(url);
+  }
 }
