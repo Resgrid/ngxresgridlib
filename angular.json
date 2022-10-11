@@ -25,6 +25,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "preserveSymlinks": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -132,11 +133,11 @@
         }
       }
     },
-    "NgxResgridLib": {
+    "ngx-resgridlib": {
       "projectType": "library",
       "root": "projects/ngx-resgrid-apps-shared",
       "sourceRoot": "projects/ngx-resgrid-apps-shared/src",
-      "prefix": "NgxResgridLib",
+      "prefix": "rl",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

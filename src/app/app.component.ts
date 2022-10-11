@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { CallsService } from 'projects/ngx-resgrid-apps-shared/src/lib/services/v4/calls.service';
-import { AuthService } from 'projects/ngx-resgrid-apps-shared/src/lib/services/v4/auth.service';
+import { CallPrioritiesService, CallsService } from 'ngx-resgridlib';
+import { AuthService } from 'ngx-resgridlib';
 
 @Component({
   selector: 'resgrid-apps-shared-root',
@@ -10,7 +10,7 @@ import { AuthService } from 'projects/ngx-resgrid-apps-shared/src/lib/services/v
 export class AppComponent {
   title = 'ResgridAppShared';
 
-  constructor(private authService: AuthService, private callsService: CallsService) {
+  constructor(private authService: AuthService, private callsService: CallsService, private callPrioritiesService: CallPrioritiesService) {
     
   }
 
@@ -25,4 +25,9 @@ export class AppComponent {
   public tryTokenRefresh() {
     this.authService.refreshTokens().subscribe( (data) => { });
   }
+
+  public getCallPriorities() {
+    this.callPrioritiesService.getAllCallPriorites().subscribe( (data) => { });
+  }
+
 }

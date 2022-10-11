@@ -7,6 +7,7 @@ export interface ResgridASConfiguration {
   channelHubName: string;
   logLevel: number;
   isMobileApp: boolean;
+  cacheProvider: any;
 }
 
 export class ResgridConfig implements ResgridASConfiguration {
@@ -18,6 +19,7 @@ export class ResgridConfig implements ResgridASConfiguration {
   public googleApiKey: string = '';
   public logLevel: number = 0;
   public isMobileApp: boolean = false;
+  public cacheProvider: any = null;
 
   get apiUrl(): string {
     return `${this.baseApiUrl()}/api/${this.apiVersion}`;

@@ -1,11 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxResgridLibModule } from 'projects/ngx-resgrid-apps-shared/src/public-api';
+import { NgxResgridLibModule } from 'ngx-resgridlib';
 import { AppComponent } from './app.component';
 
 let getBaseUrl = (): string => {
-  return 'http://localhost:8081';
+  return 'https://api.resgrid.com';
 }
 
 @NgModule({
@@ -15,7 +15,17 @@ let getBaseUrl = (): string => {
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0, isMobileApp: false}),
+    NgxResgridLibModule.forRoot({
+      baseApiUrl: getBaseUrl, 
+      apiVersion: 'v4', 
+      clientId: 'test', 
+      googleApiKey: '', 
+      channelUrl: '', 
+      channelHubName: '', 
+      logLevel: 0, 
+      isMobileApp: false,
+      cacheProvider: null
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]
