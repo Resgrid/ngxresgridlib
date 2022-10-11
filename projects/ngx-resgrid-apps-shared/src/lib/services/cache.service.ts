@@ -30,6 +30,16 @@ export class CacheService {
     return httpContext;
   }
 
+  public async initalize(): Promise<void> {
+    if (this.cacheProvider) {
+      return await this.cacheProvider.initialize();
+    } else {
+      return new Promise<void>((resolve, reject) => {
+        resolve();
+      });
+    }
+  }
+
   public async put(data: ICacheable): Promise<void> {
     if (this.cacheProvider) {
       data.cacheSavedOn = new Date();
