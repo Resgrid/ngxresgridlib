@@ -28,7 +28,7 @@ import { StorageService } from '../storage.service';
 import { LoggerService } from '../logger.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private isRefreshing = false;
@@ -105,7 +105,7 @@ export class AuthService {
       if (!this.isRefreshing) {
         this.isRefreshing = true;
 
-        this.logger.logDebug(this.config.clientId, 'Retrived stored tokens');
+        this.logger.logDebug(this.config.clientId, 'Retrieved stored tokens');
 
         return this.getTokens(
           {
@@ -124,7 +124,7 @@ export class AuthService {
       }
     }
 
-    this.logger.logDebug(this.config.clientId, 'No stored tokens retrived');
+    this.logger.logDebug(this.config.clientId, 'No stored tokens retrieved');
     return of(null);
   }
 

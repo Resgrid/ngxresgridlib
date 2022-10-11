@@ -19,5 +19,14 @@
         "statusBarItem.remoteForeground": "#15202b",
         "commandCenter.border": "#15202b99"
     },
-    "peacock.color": "#b4f4c9"
+    "peacock.color": "#b4f4c9",
+    "spellright.language": [
+        "en"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext",
+        "typescript"
+    ]
 }
