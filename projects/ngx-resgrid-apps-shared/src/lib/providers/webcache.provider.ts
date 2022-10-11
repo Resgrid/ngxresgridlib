@@ -9,6 +9,12 @@ import { StorageService } from '../services/storage.service';
 export class WebCacheProvider implements ICacheProvider {
   constructor() {}
 
+  public initialize(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        resolve();
+      });
+  }
+
   public get(key: string): Promise<string> {
     const that = this;
 
