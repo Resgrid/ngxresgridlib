@@ -18,7 +18,7 @@ jobs:
       - run: npm ci
       - run: npm ci
         working-directory: ./projects/ngx-resgrid-apps-shared
-      - run: ng build NgxResgridLib --configuration production
+      - run: ng build ngx-resgridlib --configuration production
       - run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
