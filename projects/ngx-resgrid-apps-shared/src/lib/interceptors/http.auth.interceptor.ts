@@ -117,7 +117,6 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     // Unauthorized
     else if (error.status === 401) {
       this.logger.logDebug(
-        this.config.clientId,
         `In handleResponseError got 401 response: ${request.url}`
       );
 

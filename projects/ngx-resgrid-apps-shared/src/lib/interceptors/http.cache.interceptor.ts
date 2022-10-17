@@ -17,12 +17,13 @@ import {
   CACHE_TIME,
   CACHE_TYPE,
 } from '../services/cache.service';
+import { LoggerService } from '../services/logger.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CacheInterceptor implements HttpInterceptor {
-  constructor(private cacheService: CacheService) {}
+  constructor(private cacheService: CacheService, private loggerService: LoggerService) {}
 
   intercept(
     req: HttpRequest<any>,
@@ -32,53 +33,71 @@ export class CacheInterceptor implements HttpInterceptor {
     if (req.method === 'GET') {
       if (req.context.get(CACHE)) {
         if (req.context.get(CACHE_TYPE) === 1) {
-          return from(this.cacheService.getHttpResponse(req.context.get(CACHE_KEY))).pipe(
-            switchMap((cachedResponse) => {
-              if (cachedResponse) {
-                console.log(
-                  `Returning a cached response: ${req.context.get(CACHE_KEY)}`
-                );
-                return of(cachedResponse);
-              } else {
-                return next.handle(req).pipe(
-                  tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
-                    if (httpEvent instanceof HttpResponse) {
-                      this.cacheService.putHttpResponse(
-                        req.context.get(CACHE_KEY),
-                        req.context.get(CACHE_TIME),
-                        httpEvent
-                      );
-                    }
-                  }),
-                  switchMap((httpEvent: HttpEvent<any>) => {
-                    return of(httpEvent);
-                  }),
-                  catchError((err: HttpErrorResponse) => {
-                    throw err;
-                  })
+
+          return next.handle(req).pipe(
+            tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
+              if (httpEvent instanceof HttpResponse) {
+                this.cacheService.putHttpResponse(
+                  req.context.get(CACHE_KEY),
+                  req.context.get(CACHE_TIME),
+                  httpEvent
                 );
               }
             }),
-            catchError((val) => {
-              return next.handle(req).pipe(
-                tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
-                  if (httpEvent instanceof HttpResponse) {
-                    this.cacheService.putHttpResponse(
-                      req.context.get(CACHE_KEY),
-                      req.context.get(CACHE_TIME),
-                      httpEvent
-                    );
-                  }
-                }),
-                switchMap((httpEvent: HttpEvent<any>) => {
-                  return of(httpEvent);
-                }),
-                catchError((err: HttpErrorResponse) => {
-                  throw err;
-                })
-              );
+            switchMap((httpEvent: HttpEvent<any>) => {
+              return of(httpEvent);
+            }),
+            catchError((err: HttpErrorResponse) => {
+              throw err;
             })
           );
+
+          //return from(this.cacheService.getHttpResponse(req.context.get(CACHE_KEY))).pipe(
+          //  switchMap((cachedResponse) => {
+          //    if (cachedResponse) {
+          //      this.loggerService.logDebug(`Returning a cached response: ${req.context.get(CACHE_KEY)} data: ${JSON.stringify(cachedResponse)}`);
+          //      //return of(cachedResponse);
+         //       return of(new HttpResponse({ body: cachedResponse.body }))
+         //     } else {
+         //       return next.handle(req).pipe(
+          //        tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
+          //          if (httpEvent instanceof HttpResponse) {
+          //            this.cacheService.putHttpResponse(
+          //              req.context.get(CACHE_KEY),
+          //              req.context.get(CACHE_TIME),
+          //              httpEvent
+          //            );
+          //          }
+          //        }),
+         //        switchMap((httpEvent: HttpEvent<any>) => {
+          //          return of(httpEvent);
+          //        }),
+          //        catchError((err: HttpErrorResponse) => {
+          //          throw err;
+          //        })
+          //      );
+          //    }
+          //  }),
+          //  catchError((val) => {
+          //    return next.handle(req).pipe(
+          //      tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
+          //        if (httpEvent instanceof HttpResponse) {
+          //          this.cacheService.putHttpResponse(
+          //            req.context.get(CACHE_KEY),
+          //            req.context.get(CACHE_TIME),
+          //            httpEvent
+          //          );
+          //        }
+          //      }),
+          //      switchMap((httpEvent: HttpEvent<any>) => {
+           //       return of(httpEvent);
+          //      }),
+          //      catchError((err: HttpErrorResponse) => {
+          //        throw err;
+          //      })
+          //    );
+          //  })
+          //);
         } else { // TODO: Cache Type 2
           // pass along non-cacheable requests
           return next.handle(req);

@@ -93,7 +93,7 @@ export class AuthService {
   }
 
   public refreshTokens(): Observable<ProfileModel | null> {
-    this.logger.logDebug(this.config.clientId, 'Starting refresh token flow');
+    this.logger.logDebug('Starting refresh token flow');
 
     const storedTokens = this.retrieveTokens();
 
@@ -105,7 +105,7 @@ export class AuthService {
       if (!this.isRefreshing) {
         this.isRefreshing = true;
 
-        this.logger.logDebug(this.config.clientId, 'Retrieved stored tokens');
+        this.logger.logDebug('Retrieved stored tokens');
 
         return this.getTokens(
           {
@@ -124,7 +124,7 @@ export class AuthService {
       }
     }
 
-    this.logger.logDebug(this.config.clientId, 'No stored tokens retrieved');
+    this.logger.logDebug('No stored tokens retrieved');
     return of(null);
   }
 
@@ -178,7 +178,7 @@ export class AuthService {
       params = params.append('password', data.password);
     }
 
-    this.logger.logDebug(this.config.clientId, 'performing token connection');
+    this.logger.logDebug('performing token connection');
 
     return this.http
       .post<AuthTokenModel>(`${this.config.apiUrl}/connect/token`, params, {
@@ -192,7 +192,6 @@ export class AuthService {
             .toString();
 
           this.logger.logDebug(
-            this.config.clientId,
             `got token expiration: ${res.expiration_date}`
           );
 
@@ -248,7 +247,6 @@ export class AuthService {
         map((tokens: AuthTokenModel | undefined) => {
           if (tokens) {
             this.logger.logDebug(
-              this.config.clientId,
               `Will refresh auth token in ${tokens.expires_in * 0.8 * 1000}`
             );
             interval(tokens.expires_in * 0.8 * 1000);

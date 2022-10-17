@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ICacheable } from '../models/cacheable';
 import { ICacheProvider } from '../models/cacheProvider';
 import { WebCacheProvider } from '../providers/webcache.provider';
+import { LoggerService } from './logger.service';
 
 export const CACHE = new HttpContextToken<boolean>(() => false);
 export const CACHE_KEY = new HttpContextToken<string>(() => '');
@@ -18,7 +19,7 @@ export const CACHE_TIME = new HttpContextToken<number>(() => 0);
 })
 export class CacheService {
 
-  constructor(@Inject('RG_CACHE_PROVIDER') private cacheProvider: ICacheProvider) {}
+  constructor(@Inject('RG_CACHE_PROVIDER') private cacheProvider: ICacheProvider, private loggerService: LoggerService) {}
 
   public setCacheInfoHttpContext(type: ICacheable): HttpContext {
     let httpContext = new HttpContext();
@@ -34,6 +35,7 @@ export class CacheService {
     if (this.cacheProvider) {
       return await this.cacheProvider.initialize();
     } else {
+      this.loggerService.logError('No cache provider found');
       return new Promise<void>((resolve, reject) => {
         resolve();
       });
@@ -120,7 +122,6 @@ export class CacheService {
 
       if (data) {
         const result = JSON.parse(data) as HttpResponse<any>;
-
         return result;
       }
     }
