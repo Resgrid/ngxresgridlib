@@ -14,7 +14,6 @@ export class StorageService {
 
     if (storedValue) {
       this.logger.logDebug(
-        this.config.clientId,
         `readKey ${combinedKey} length: ${storedValue.length}`
       );
 
@@ -22,7 +21,6 @@ export class StorageService {
     }
 
     this.logger.logDebug(
-      this.config.clientId,
       `readKey ${combinedKey} empty`
     );
 

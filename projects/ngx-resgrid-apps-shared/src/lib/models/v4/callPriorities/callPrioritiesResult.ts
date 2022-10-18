@@ -4,7 +4,7 @@ import { CallPriorityResultData } from "./callPriorityResultData";
 
 export class CallPrioritiesResult extends BaseV4Request implements ICacheable {
     public cacheKey: string = 'CallPrioritiesResult';
-    public cacheTime: number = 60000;
+    public cacheTime: number = 20160;
     public cacheSavedOn: Date | undefined = undefined;
     public cacheHitFailed: boolean = false;
     public cacheType: number = 1;

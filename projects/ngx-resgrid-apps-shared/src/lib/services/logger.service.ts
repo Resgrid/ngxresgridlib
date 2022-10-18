@@ -13,9 +13,9 @@ export class LoggerService {
   logError(message: any, ...args: any[]): void {
     if (this.config.logLevel >= 2) {
       if (!!args && !!args.length) {
-          console.error(`[ERROR] - ${message}`, ...args);
+          console.error(`[ERROR] ${this.config.clientId} - ${message}`, ...args);
         } else {
-          console.error(`[ERROR] - ${message}`);
+          console.error(`[ERROR] ${this.config.clientId} - ${message}`);
         }
     }
   }
@@ -23,19 +23,19 @@ export class LoggerService {
   logWarning(message: any, ...args: any[]): void {
     if (this.config.logLevel >= 1) {
       if (!!args && !!args.length) {
-          console.warn(`[WARN] - ${message}`, ...args);
+          console.warn(`[WARN] ${this.config.clientId} - ${message}`, ...args);
         } else {
-          console.warn(`[WARN] - ${message}`);
+          console.warn(`[WARN] ${this.config.clientId} - ${message}`);
         }
     }
   }
 
-  logDebug(configId: string, message: any, ...args: any[]): void {
+  logDebug(message: any, ...args: any[]): void {
     if (this.config.logLevel >= 0) {
       if (!!args && !!args.length) {
-        console.log(`[DEBUG] ${configId} - ${message}`, ...args);
+        console.log(`[DEBUG] ${this.config.clientId} - ${message}`, ...args);
       } else {
-        console.log(`[DEBUG] ${configId} - ${message}`);
+        console.log(`[DEBUG] ${this.config.clientId} - ${message}`);
       }
     }
   }
