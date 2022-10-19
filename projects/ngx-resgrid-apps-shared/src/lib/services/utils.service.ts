@@ -97,6 +97,15 @@ export class UtilsService {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
+    let hours = date.getHours();
+    if (format.indexOf('t') > -1) {
+      if (hours > 11) {
+        format = format.replace('t', 'pm');
+      } else {
+        format = format.replace('t', 'am');
+      }
+    }
+
     if (format.indexOf('MMMM') > -1) {
       format = format.replace('MMMM', this.monthNames[date.getMonth()]);
     } else if (format.indexOf('MMM') > -1) {
@@ -116,14 +125,6 @@ export class UtilsService {
       this.padLeadingZero(date.getDate()).toString()
     );
 
-    let hours = date.getHours();
-    if (format.indexOf('t') > -1) {
-      if (hours > 11) {
-        format = format.replace('t', 'pm');
-      } else {
-        format = format.replace('t', 'am');
-      }
-    }
     if (format.indexOf('HH') > -1) {
       format = format.replace('HH', this.padLeadingZero(hours).toString());
     }
