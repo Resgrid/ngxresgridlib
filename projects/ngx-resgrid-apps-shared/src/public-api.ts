@@ -34,6 +34,7 @@ export * from './lib/services/v4/notes.service';
 export * from './lib/services/v4/personnel.service';
 export * from './lib/services/v4/roles.service';
 export * from './lib/services/v4/personnelStaffing.service';
+export * from './lib/services/v4/personnelLocation.service';
 export * from './lib/services/v4/personnelStatuses.service';
 export * from './lib/services/v4/security.service';
 export * from './lib/services/v4/shifts.service';
