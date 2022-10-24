@@ -50,6 +50,7 @@ export class NgxResgridLibModule {
             config.googleApiKey = configuration.googleApiKey;
             config.channelUrl = configuration.channelUrl;
             config.channelHubName = configuration.channelHubName;
+            config.realtimeGeolocationHubName = configuration.realtimeGeolocationHubName;
             config.logLevel = configuration.logLevel;
             config.isMobileApp = configuration.isMobileApp;
 
