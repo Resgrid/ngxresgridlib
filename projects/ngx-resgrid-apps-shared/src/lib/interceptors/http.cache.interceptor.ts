@@ -34,8 +34,8 @@ export class CacheInterceptor implements HttpInterceptor {
       if (req.context.get(CACHE)) {
         if (req.context.get(CACHE_TYPE) === 1) {
           return next.handle(req).pipe(
-            tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
-              if (httpEvent instanceof HttpResponse) {
+          tap<HttpEvent<any>>((httpEvent: HttpEvent<any>) => {
+              if (httpEvent instanceof HttpResponse && httpEvent.status === 200) {
                 this.cacheService.putHttpResponse(
                   req.context.get(CACHE_KEY),
                   req.context.get(CACHE_TIME),
