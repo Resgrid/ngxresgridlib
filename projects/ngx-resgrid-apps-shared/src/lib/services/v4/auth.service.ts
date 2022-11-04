@@ -220,7 +220,7 @@ export class AuthService {
 
   private startupTokenRefresh(): Observable<AuthTokenModel> {
     return of(this.retrieveTokens()).pipe(
-      map((tokens: AuthTokenModel) => {
+      map((tokens: AuthTokenModel | null) => {
         if (!tokens) {
           this.updateState({ authReady: true });
           return of('No token in Storage');
