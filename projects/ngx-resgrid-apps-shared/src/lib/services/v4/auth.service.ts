@@ -137,10 +137,13 @@ export class AuthService {
     this.storageService.write('auth-tokens', tokens);
   }
 
-  public retrieveTokens(): AuthTokenModel {
+  public retrieveTokens(): AuthTokenModel | null {
     var tokens = this.storageService.read('auth-tokens');
 
-    return tokens as AuthTokenModel;
+    if (tokens) {
+      return tokens as AuthTokenModel;
+    }
+    return null;
   }
 
   private removeToken(): void {
