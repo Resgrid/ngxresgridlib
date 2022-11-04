@@ -69,7 +69,14 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
 
           const dupReq = this.addAuthHeader(req);
           const tokens = this.authService.retrieveTokens();
-          this.refreshTokenSubject.next(tokens.access_token);
+
+          if (tokens) {
+            this.refreshTokenSubject.next(tokens.access_token);
+          }// else {
+           // this.logger.logError('No tokens found after refresh');
+           // this.authService.logout();
+           // return throwError('');
+          //}
 
           return next.handle(dupReq);
         }),
