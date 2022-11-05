@@ -5,46 +5,7 @@ import { Observable, Observer, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { EventsService } from './events.service';
 import { Consts } from '../consts';
-
-/**
- * When SignalR runs it will add functions to the global $ variable
- * that you use to create connections to the hub. However, in this
- * class we won't want to depend on any global variables, so this
- * class provides an abstraction away from using $ directly in here.
- */
-export class SignalrWindow extends Window {
-  $: any;
-}
-
-export enum ConnectionState {
-  Connecting = 1,
-  Connected = 2,
-  Reconnecting = 3,
-  Disconnected = 4,
-}
-
-export class ChannelConfig {
-  url: string = '';
-  hubName: string = '';
-  channel: string = '';
-}
-
-export class ChannelEvent {
-  Name: string = '';
-  ChannelName: string = '';
-  Timestamp: Date;
-  Data: any;
-  Json: string = '';
-
-  constructor() {
-    this.Timestamp = new Date();
-  }
-}
-
-class ChannelSubject {
-  channel: string = '';
-  subject?: Subject<ChannelEvent>;
-}
+import { ChannelEvent, ChannelSubject, ConnectionState } from './signalr.service';
 
 
 @Injectable({
@@ -268,7 +229,7 @@ export class RealtimeGeolocationService {
   //     });
   // }
 
-  /** publish provides a way for calles to emit events on any channel. In a
+  /** publish provides a way for calls to emit events on any channel. In a
    * production app the server would ensure that only authorized clients can
    * actually emit the message, but here we're not concerned about that.
    */

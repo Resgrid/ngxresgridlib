@@ -53,6 +53,7 @@ export * from './lib/services/kazoo-voice.service';
 export * from './lib/services/location.service';
 export * from './lib/services/logger.service';
 export * from './lib/services/signalr.service';
+export * from './lib/services/realtime-geolocation.service';
 export * from './lib/services/storage.service';
 export * from './lib/services/types.service';
 export * from './lib/services/uriEncoder.service';
