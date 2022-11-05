@@ -41,7 +41,7 @@ export class ChannelEvent {
   }
 }
 
-class ChannelSubject {
+export class ChannelSubject {
   channel: string = '';
   subject?: Subject<ChannelEvent>;
 }
@@ -120,7 +120,7 @@ export class SignalRService {
     //  if the startup sequence is done.
     //
     // If we just mapped the start() promise to an observable, then any time
-    //  a client subscried to it the start sequence would be triggered
+    //  a client subscribed to it the start sequence would be triggered
     //  again since it's a cold observable.
     //
     if (!this.started) {
@@ -349,7 +349,7 @@ export class SignalRService {
   //     });
   // }
 
-  /** publish provides a way for calles to emit events on any channel. In a
+  /** publish provides a way for calls to emit events on any channel. In a
    * production app the server would ensure that only authorized clients can
    * actually emit the message, but here we're not concerned about that.
    */
