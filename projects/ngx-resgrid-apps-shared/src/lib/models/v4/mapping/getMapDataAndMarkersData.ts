@@ -6,6 +6,7 @@ export class MapDataAndMarkersData  {
 }
 
 export class MapMakerInfoData  {
+    public Id: string = '';
     public Longitude: number =  0;
     public Latitude: number =  0;
     public Title: string = '';
