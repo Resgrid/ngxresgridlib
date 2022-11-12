@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CallPrioritiesService, CallsService } from 'ngx-resgridlib';
+import { CallPrioritiesService, CallsService, RealtimeGeolocationService, SignalRService } from 'ngx-resgridlib';
 import { AuthService } from 'ngx-resgridlib';
 
 @Component({
@@ -10,7 +10,9 @@ import { AuthService } from 'ngx-resgridlib';
 export class AppComponent {
   title = 'ResgridAppShared';
 
-  constructor(private authService: AuthService, private callsService: CallsService, private callPrioritiesService: CallPrioritiesService) {
+  constructor(private authService: AuthService, private callsService: CallsService, 
+    private callPrioritiesService: CallPrioritiesService, private realtimeGeolocationService: RealtimeGeolocationService,
+    private signalRService: SignalRService) {
     
   }
 
@@ -30,4 +32,7 @@ export class AppComponent {
     this.callPrioritiesService.getAllCallPriorites().subscribe( (data) => { });
   }
 
+  public connectToGeolocationHub() {
+    this.realtimeGeolocationService.start();
+  }
 }

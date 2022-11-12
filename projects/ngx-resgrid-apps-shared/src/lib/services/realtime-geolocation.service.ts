@@ -6,7 +6,7 @@ import { share } from 'rxjs/operators';
 import { EventsService } from './events.service';
 import { Consts } from '../consts';
 import { ChannelEvent, ChannelSubject, ConnectionState } from './signalr.service';
-
+import { AuthService } from './v4/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,11 +27,9 @@ export class RealtimeGeolocationService {
   constructor(
     private config: ResgridConfig,
     private events: EventsService,
-    private consts: Consts
+    private consts: Consts,
+    private authService: AuthService
   ) {
-    // Set up our observables
-    //
-    //this.connectionState$ = this.connectionStateSubject.asObservable().share();
     this.connectionState$ = new Observable<ConnectionState>((observer: any) => {
       this.connectionStateObserver = observer;
     }).pipe(share()); // share() allows multiple subscribers
@@ -42,15 +40,19 @@ export class RealtimeGeolocationService {
     //this.connectionStateObserver.next(ConnectionState.Connecting);
   }
 
-  public start(departmentId: string): void {
+  public start(): void {
     console.log('SignalR Channel Start()');
 
     if (!this.started) {
       try {
         this.connectionStateObserver?.next(ConnectionState.Connecting);
+        const tokens = this.authService.retrieveTokens();
 
+        if (tokens) {
         this.hubConnection = new signalR.HubConnectionBuilder()
-          .withUrl(this.config.channelUrl + this.config.realtimeGeolocationHubName)
+          .withUrl(this.config.channelUrl + this.config.realtimeGeolocationHubName + `?access_token=${encodeURIComponent(tokens.access_token)}`)
+          .configureLogging(signalR.LogLevel.Information)
+          .withAutomaticReconnect()
           .build();
 
         // SignalR Event Listeners
@@ -82,15 +84,15 @@ export class RealtimeGeolocationService {
             this.connectionStateObserver?.next(ConnectionState.Connected);
 
             this.hubConnection
-              ?.invoke('geolocationConnect', parseInt(departmentId))
+              ?.invoke('geolocationConnect')
               .then(() => {
                 console.log(
-                  `Successfully subscribed to Connect channel with ${departmentId}`
+                  `Successfully subscribed to geolocationConnect channel`
                 );
               })
               .catch((error: any) => {
                 console.log(
-                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`
+                  `Error subscribed to geolocationConnect channel, ERROR: ${error}`
                 );
               });
 
@@ -101,6 +103,7 @@ export class RealtimeGeolocationService {
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
             this.errorSubject.next(err);
           });
+        }
       } catch (ex) {
         console.log(ex);
       }
