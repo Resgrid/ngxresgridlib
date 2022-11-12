@@ -20,8 +20,9 @@ let getBaseUrl = (): string => {
       apiVersion: 'v4', 
       clientId: 'test', 
       googleApiKey: '', 
-      channelUrl: '', 
-      channelHubName: '', 
+      channelUrl: 'https://localhost:5003',
+      channelHubName: '/eventingHub', 
+      realtimeGeolocationHubName: '/geolocationHub',
       logLevel: 0, 
       isMobileApp: false,
       cacheProvider: null
