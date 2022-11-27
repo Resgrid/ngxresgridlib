@@ -184,6 +184,8 @@ export * from './lib/models/v4/unitRoles/unitRoleResultData';
 export * from './lib/models/v4/unitRoles/unitRolesForUnitResult';
 export * from './lib/models/v4/unitRoles/activeUnitRoleResultData';
 export * from './lib/models/v4/unitRoles/activeUnitRolesResult';
+export * from './lib/models/v4/unitRoles/setRoleAssignmentsForUnitResult';
+export * from './lib/models/v4/unitRoles/setUnitRolesInput';
 export * from './lib/models/v4/units/getUnitFilterOptionsResult';
 export * from './lib/models/v4/units/unitInfoResult';
 export * from './lib/models/v4/units/unitInfoResultData';
