@@ -56,6 +56,8 @@ export class ChannelSubject {
   providedIn: 'root',
 })
 export class SignalRService {
+  private retryCount: number = 0;
+
   /**
    * starting$ is an observable available to know if the signalr
    * connection is ready or not. On a successful connection this
@@ -114,6 +116,7 @@ export class SignalRService {
    */
   public start(departmentId: string): void {
     console.log('SignalR Channel Start()');
+    this.retryCount = 0;
 
     // Now we only want the connection started once, so we have a special
     //  starting$ observable that clients can subscribe to know know if
@@ -204,6 +207,7 @@ export class SignalRService {
             this.started = true;
           })
           .catch((err) => {
+            this.retryCount++;
             console.log('Error while starting connection: ' + err);
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
             this.errorSubject.next(err);
@@ -239,9 +243,17 @@ export class SignalRService {
             this.started = true;
           })
           .catch((err) => {
-            console.log('Error while starting connection: ' + err);
+            console.log('Error while restarting connection: ' + err);
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
-            this.started = false;
+
+            if (this.retryCount < 10) {
+              this.started = false;
+            } else {
+              console.log('Hub connection retry count exceeded');
+              this.started = true;  // Give up
+            }
+
+            this.retryCount++;
             this.errorSubject.next(err);
           });
       } catch (ex) {
@@ -256,11 +268,13 @@ export class SignalRService {
         console.log('Connection stopped');
         this.connectionStateObserver?.next(ConnectionState.Disconnected);
         this.started = false;
+        this.retryCount = 0;
       })
       .catch((err) => {
-        console.log('Error while starting connection: ' + err);
+        console.log('Error while stopping connection: ' + err);
         this.connectionStateObserver?.next(ConnectionState.Disconnected);
         this.started = false;
+        this.retryCount = 0;
         this.errorSubject.next(err);
       });
     }

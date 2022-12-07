@@ -12,6 +12,7 @@ import { AuthService } from './v4/auth.service';
   providedIn: 'root',
 })
 export class RealtimeGeolocationService {
+  private retryCount: number = 0;
   public starting$: Observable<any>;
   public connectionState$: Observable<ConnectionState>;
   public error$: Observable<string>;
@@ -42,6 +43,7 @@ export class RealtimeGeolocationService {
 
   public start(): void {
     console.log('SignalR Channel Start()');
+    this.retryCount = 0;
 
     if (!this.started) {
       try {
@@ -99,6 +101,7 @@ export class RealtimeGeolocationService {
             this.started = true;
           })
           .catch((err) => {
+            this.retryCount++;
             console.log('Error while starting connection: ' + err);
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
             this.errorSubject.next(err);
@@ -135,9 +138,17 @@ export class RealtimeGeolocationService {
             this.started = true;
           })
           .catch((err) => {
-            console.log('Error while starting connection: ' + err);
+            console.log('Error while restarting connection: ' + err);
             this.connectionStateObserver?.next(ConnectionState.Disconnected);
-            this.started = false;
+            
+            if (this.retryCount < 10) {
+              this.started = false;
+            } else {
+              console.log('Hub connection retry count exceeded');
+              this.started = true;  // Give up
+            }
+
+            this.retryCount++;
             this.errorSubject.next(err);
           });
       } catch (ex) {
@@ -152,11 +163,13 @@ export class RealtimeGeolocationService {
         console.log('Connection stopped');
         this.connectionStateObserver?.next(ConnectionState.Disconnected);
         this.started = false;
+        this.retryCount = 0;
       })
       .catch((err) => {
         console.log('Error while starting connection: ' + err);
         this.connectionStateObserver?.next(ConnectionState.Disconnected);
         this.started = false;
+        this.retryCount = 0;
         this.errorSubject.next(err);
       });
     }
