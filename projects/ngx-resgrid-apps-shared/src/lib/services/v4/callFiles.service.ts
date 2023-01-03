@@ -54,6 +54,15 @@ export class CallFilesService {
       );
   }
 
+  public getCallAttachmentFile(url: string): Observable<any> {
+    const requestOptions: Object = {
+      responseType: 'blob',
+      reportProgress: true,
+      observe: 'events'
+    }
+    return this.http.get<any>(url, requestOptions);
+  }
+
   public saveCallImage(
     callId: string,
     userId: string,
