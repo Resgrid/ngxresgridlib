@@ -4,4 +4,5 @@ export class GetConfigResultData  {
     public LoggingKey: string = '';
     public MapUrl: string = '';
     public MapAttribution: string = '';
+    public OpenWeatherApiKey: string = '';
 }
