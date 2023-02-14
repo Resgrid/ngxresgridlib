@@ -62,7 +62,7 @@ export class CacheService {
       try {
         const data = await this.cacheProvider.get(key);
 
-        if (data) {
+        if (data && data.length > 0) {
           const result = JSON.parse(data) as T;
 
           if (result) {
@@ -120,7 +120,7 @@ export class CacheService {
     if (this.cacheProvider) {
       const data = await this.cacheProvider.get(key);
 
-      if (data) {
+      if (data && data.length > 0) {
         const result = JSON.parse(data) as HttpResponse<any>;
         return result;
       }
