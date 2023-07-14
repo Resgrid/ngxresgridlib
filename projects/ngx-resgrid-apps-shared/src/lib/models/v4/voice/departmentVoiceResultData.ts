@@ -12,7 +12,8 @@ export class DepartmentVoiceChannelResultData {
     public Id: string = '';
     public Name: string = ''; 
     public ConferenceNumber: number = 0; 
-    public IsDefault: boolean = false; 
+    public IsDefault: boolean = false;
+    public Token: string = '';
 }
 
 export class DepartmentVoiceUserInfoResultData {
