@@ -253,7 +253,7 @@ export class UtilsService {
     return result;
   }
 
-  public getTimeAgo(time: any): string {
+  public getTimeAgo(time: any, floor: number = 0): string {
     if (!time) {
       return 'Unknown';
     }
@@ -293,6 +293,10 @@ export class UtilsService {
     let seconds = (+new Date() - time) / 1000,
       token = 'ago',
       listChoice = 1;
+
+    if (floor > 0 && seconds < floor) {
+      seconds = seconds + floor;
+    }
 
     if (seconds === 0) {
       return 'Just now';

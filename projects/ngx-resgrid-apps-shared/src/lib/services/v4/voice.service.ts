@@ -7,6 +7,7 @@ import { DepartmentVoiceResult } from '../../models/v4/voice/departmentVoiceResu
 import { VoiceSessionConnectionResult } from '../../models/v4/voice/voiceSessionConnectionResult';
 import { CacheService } from '../cache.service';
 import { LoggerService } from '../logger.service';
+import { DepartmentAudioResult } from '../../models/v4/voice/departmentAudioResult';
 
 
 @Injectable({
@@ -46,5 +47,10 @@ export class VoiceService {
   public connectToSession(sessionId: string): Observable<VoiceSessionConnectionResult> {
     const url = this.config.apiUrl + '/Voice/ConnectToSession?sessionId=' + sessionId;
     return this.http.get<VoiceSessionConnectionResult>(url);
+  }
+
+  public getDepartmentAudioStreams(): Observable<DepartmentAudioResult> {
+    const url = this.config.apiUrl + '/Voice/GetDepartmentAudioStreams';
+    return this.http.get<DepartmentAudioResult>(url);
   }
 }
