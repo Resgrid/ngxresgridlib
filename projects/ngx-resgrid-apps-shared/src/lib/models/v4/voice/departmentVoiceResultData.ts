@@ -4,6 +4,7 @@ export class DepartmentVoiceResultData {
     public Type: number = 0;
     public VoipServerWebsocketSslAddress: string = '';
     public CallerIdName: string = '';
+    public CanConnectApiToken: string = '';
     public Channels: DepartmentVoiceChannelResultData[] = [];
     public UserInfo: DepartmentVoiceUserInfoResultData = new DepartmentVoiceUserInfoResultData();
 }
