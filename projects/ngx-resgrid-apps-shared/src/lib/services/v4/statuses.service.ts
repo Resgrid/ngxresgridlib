@@ -5,14 +5,13 @@ import { ResgridConfig } from '../../resgrid-config';
 import { StatusesResult } from '../../models/v4/statuses/statusesResult';
 import { UnitTypeStatusesResult } from '../../models/v4/statuses/unitTypeStatusesResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class StatusesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllStatusesForPersonnel(): Observable<StatusesResult> {

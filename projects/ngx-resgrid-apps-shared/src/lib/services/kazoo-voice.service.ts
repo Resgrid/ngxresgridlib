@@ -13,7 +13,10 @@ export class KazooVoiceService {
   private _userAgent: any;
   private _pin: string = '';
 
-  constructor(private winRef: WindowRef, private config: ResgridConfig) {}
+  constructor(
+    private winRef: WindowRef,
+    private config: ResgridConfig,
+  ) {}
 
   public startVoipServices(voice: DepartmentVoiceResultData) {
     if (voice && voice.UserInfo) {

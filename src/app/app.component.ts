@@ -5,24 +5,27 @@ import { AuthService } from 'projects/ngx-resgrid-apps-shared/src/lib/services/v
 @Component({
   selector: 'resgrid-apps-shared-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'ResgridAppShared';
 
-  constructor(private authService: AuthService, private callsService: CallsService) {
-    
-  }
+  constructor(
+    private authService: AuthService,
+    private callsService: CallsService,
+  ) {}
 
   public tryLogin() {
-    this.authService.login({username: '', password: '', refresh_token: ''}).subscribe( (data) => { });
+    this.authService
+      .login({ username: '', password: '', refresh_token: '' })
+      .subscribe((data) => {});
   }
 
   public getActiveCalls() {
-    this.callsService.getActiveCalls().subscribe( (data) => { });
+    this.callsService.getActiveCalls().subscribe((data) => {});
   }
 
   public tryTokenRefresh() {
-    this.authService.refreshTokens().subscribe( (data) => { });
+    this.authService.refreshTokens().subscribe((data) => {});
   }
 }

@@ -1,10 +1,10 @@
-import {Pipe} from '@angular/core';
+import { Pipe } from '@angular/core';
 
 @Pipe({
-  name: 'truncate'
+  name: 'truncate',
 })
 export class TruncatePipe {
-  transform(value: string, args: string[]) : string {
+  transform(value: string, args: string[]): string {
     let limit = args.length > 0 ? parseInt(args[0], 10) : 10;
     let trail = args.length > 1 ? args[1] : '...';
 

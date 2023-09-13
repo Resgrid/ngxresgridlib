@@ -10,7 +10,9 @@ export interface ResgridASConfiguration {
 }
 
 export class ResgridConfig implements ResgridASConfiguration {
-  public baseApiUrl = (): string => {return 'http://localhost:8080/api/'};
+  public baseApiUrl = (): string => {
+    return 'http://localhost:8080/api/';
+  };
   public apiVersion: string = 'v4';
   public channelUrl: string = '';
   public channelHubName: string = '';

@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { CallPrioritiesResult } from '../../models/v4/callPriorities/callPrioritiesResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class CallPrioritiesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllCallPriorites(): Observable<CallPrioritiesResult> {

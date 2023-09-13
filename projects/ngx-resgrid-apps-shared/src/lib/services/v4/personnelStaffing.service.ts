@@ -18,21 +18,29 @@ import { GetCurrentStaffingResult } from '../../models/v4/personnelStaffing/getC
 export class PersonnelStaffingService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
-  public getCurrentStatffing(userId: string): Observable<GetCurrentStaffingResult> {
-    const url = this.config.apiUrl + `/PersonnelStaffing/GetCurrentStatffing?userId=${userId}`;
+  public getCurrentStatffing(
+    userId: string,
+  ): Observable<GetCurrentStaffingResult> {
+    const url =
+      this.config.apiUrl +
+      `/PersonnelStaffing/GetCurrentStatffing?userId=${userId}`;
     return this.http.get<GetCurrentStaffingResult>(url);
   }
 
-  public savePersonStatus(data: SavePersonStaffingInput): Observable<SavePersonStaffingResult> {
+  public savePersonStatus(
+    data: SavePersonStaffingInput,
+  ): Observable<SavePersonStaffingResult> {
     const url = this.config.apiUrl + '/PersonnelStaffing/SavePersonStaffing';
 
     return this.http.post<SavePersonStaffingResult>(url, data);
   }
 
-  public savePersonsStatuses(data: SavePersonsStaffingsInput): Observable<SavePersonsStaffingsResult> {
+  public savePersonsStatuses(
+    data: SavePersonsStaffingsInput,
+  ): Observable<SavePersonsStaffingsResult> {
     const url = this.config.apiUrl + '/PersonnelStaffing/SavePersonsStaffings';
 
     return this.http.post<SavePersonsStaffingsResult>(url, data);

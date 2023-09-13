@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { UnitsResult } from '../../models/v4/units/unitsResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class UnitsService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllUnits(): Observable<UnitsResult> {

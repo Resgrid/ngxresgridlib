@@ -10,21 +10,32 @@ import { PushRegistrationResult } from '../../models/v4/device/pushRegistrationR
 export class DeviceService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig) {}
+    private config: ResgridConfig,
+  ) {}
 
-  public RegisterUnitPush(token: string, unitId: string, deviceId: string, platform: number): Observable<PushRegistrationResult> {
+  public RegisterUnitPush(
+    token: string,
+    unitId: string,
+    deviceId: string,
+    platform: number,
+  ): Observable<PushRegistrationResult> {
     const url = this.config.apiUrl + '/Devices/RegisterUnitDevice';
 
     return this.http.post<PushRegistrationResult>(url, {
       Platform: platform,
       Token: token,
       UnitId: unitId,
-      DeviceUuid: deviceId
+      DeviceUuid: deviceId,
     });
   }
 
-  public UnRegisterUnitPush(deviceId: string): Observable<PushRegistrationResult> {
-    const url = this.config.apiUrl + '/Devices/UnRegisterUnitDevice?deviceUuid=' + deviceId;
+  public UnRegisterUnitPush(
+    deviceId: string,
+  ): Observable<PushRegistrationResult> {
+    const url =
+      this.config.apiUrl +
+      '/Devices/UnRegisterUnitDevice?deviceUuid=' +
+      deviceId;
     return this.http.delete<PushRegistrationResult>(url);
   }
 }

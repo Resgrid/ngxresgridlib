@@ -6,18 +6,25 @@ import { AppComponent } from './app.component';
 
 let getBaseUrl = (): string => {
   return 'http://localhost:8081';
-}
+};
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxResgridLibModule.forRoot({baseApiUrl: getBaseUrl, apiVersion: 'v4', clientId: 'test', googleApiKey: '', channelUrl: '', channelHubName: '', logLevel: 0, isMobileApp: false}),
+    NgxResgridLibModule.forRoot({
+      baseApiUrl: getBaseUrl,
+      apiVersion: 'v4',
+      clientId: 'test',
+      googleApiKey: '',
+      channelUrl: '',
+      channelHubName: '',
+      logLevel: 0,
+      isMobileApp: false,
+    }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

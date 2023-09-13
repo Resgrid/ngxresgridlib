@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { CallTypesResult } from '../../models/v4/callTypes/callTypesResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class CallTypesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllCallTypes(): Observable<CallTypesResult> {

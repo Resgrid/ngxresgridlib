@@ -9,14 +9,13 @@ import { GetRolesForCallGridResult } from '../../models/v4/dispatch/getRolesForC
 import { GetCallTemplatesResult } from '../../models/v4/dispatch/getCallTemplatesResult';
 import { GetGroupsForCallGridResult } from '../../models/v4/dispatch/getGroupsForCallGridResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class DispatchService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getNewCallData(): Observable<NewCallFormResult> {
@@ -24,8 +23,11 @@ export class DispatchService {
     return this.http.get<NewCallFormResult>(url);
   }
 
-  public getSetUnitStatusData(unitId: string): Observable<GetSetUnitStateResult> {
-    const url = this.config.apiUrl + `/Dispatch/GetSetUnitStatusData?unitId=${unitId}`;
+  public getSetUnitStatusData(
+    unitId: string,
+  ): Observable<GetSetUnitStateResult> {
+    const url =
+      this.config.apiUrl + `/Dispatch/GetSetUnitStatusData?unitId=${unitId}`;
     return this.http.get<GetSetUnitStateResult>(url);
   }
 

@@ -9,23 +9,21 @@ import { CustomStatesService } from './custom-states.service';
 })
 export class TypesService {
   private statuses: CustomStatusResultData[] = [];
-	private staffings: CustomStatusResultData[] = [];
-	private unitStates: CustomStatusResultData[] = [];
+  private staffings: CustomStatusResultData[] = [];
+  private unitStates: CustomStatusResultData[] = [];
 
   constructor(
     private customStatesProvider: CustomStatesService,
-    private consts: Consts
+    private consts: Consts,
   ) {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   public init() {
-		this.statuses = this.customStatesProvider.getPersonnelStatuses();
-		this.staffings = this.customStatesProvider.getPersonnelStaffing();
+    this.statuses = this.customStatesProvider.getPersonnelStatuses();
+    this.staffings = this.customStatesProvider.getPersonnelStaffing();
     this.unitStates = this.customStatesProvider.getUnitStates();
-	}
+  }
 
   public statusToTextConverter(value: number): string {
     if (value <= 25) {

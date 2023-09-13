@@ -26,7 +26,7 @@ export class LocationService {
       loader.load().then(() => subscriber.next());
     }).pipe(
       map(() => this._createGeocoder()),
-      multicast(new ReplaySubject(1))
+      multicast(new ReplaySubject(1)),
     ) as ConnectableObservable<google.maps.Geocoder>;
 
     connectableGeocoder$.connect(); // ignore the subscription
@@ -41,7 +41,7 @@ export class LocationService {
 
   private _getGoogleResults(
     geocoder: google.maps.Geocoder,
-    request: google.maps.GeocoderRequest
+    request: google.maps.GeocoderRequest,
   ): Observable<google.maps.GeocoderResult[]> {
     const geocodeObservable = bindCallback(geocoder.geocode);
     return geocodeObservable(request).pipe(
@@ -51,35 +51,38 @@ export class LocationService {
         }
 
         return throwError(status);
-      })
+      }),
     );
   }
 
-  private geocode(request: google.maps.GeocoderRequest): Observable<google.maps.GeocoderResult[]> {
+  private geocode(
+    request: google.maps.GeocoderRequest,
+  ): Observable<google.maps.GeocoderResult[]> {
     return this.geocoder$.pipe(
-      switchMap((geocoder) => this._getGoogleResults(geocoder, request))
+      switchMap((geocoder) => this._getGoogleResults(geocoder, request)),
     );
   }
 
-  public getCoordinatesForAddressFromGoogle(address: string): Observable<GpsLocation | null> {
+  public getCoordinatesForAddressFromGoogle(
+    address: string,
+  ): Observable<GpsLocation | null> {
     return this.geocode({ address: address }).pipe(
       map((data) => {
         if (data && data.length > 0) {
           return new GpsLocation(
             data[0].geometry.location.lat(),
-            data[0].geometry.location.lng()
+            data[0].geometry.location.lng(),
           );
         }
 
         return null;
-      })
+      }),
     );
   }
 
-
   public getDistanceBetweenTwoPoints(
     point1: GpsLocation,
-    point2: GpsLocation
+    point2: GpsLocation,
   ): number {
     let coordinate1 = new Coordinate(point1.Latitude, point1.Longitude);
     let coordinate2 = new Coordinate(point2.Latitude, point2.Longitude);
@@ -99,7 +102,11 @@ export class LazyGoogleMapsAPILoader {
   protected readonly _SCRIPT_ID: string = 'googleMapsApiScript';
   protected readonly callbackName: string = `lazyMapsAPILoader`;
 
-  constructor(w: WindowRef, d: DocumentRef, private config: ResgridConfig) {
+  constructor(
+    w: WindowRef,
+    d: DocumentRef,
+    private config: ResgridConfig,
+  ) {
     this._windowRef = w;
     this._documentRef = d;
   }

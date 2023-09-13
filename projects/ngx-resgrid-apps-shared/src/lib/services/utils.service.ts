@@ -59,7 +59,7 @@ export class UtilsService {
       parseInt(b[2], 10),
       parseInt(b[3], 10),
       parseInt(b[4], 10),
-      parseInt(b[5], 10)
+      parseInt(b[5], 10),
     );
   }
 
@@ -113,7 +113,7 @@ export class UtilsService {
 
     format = format.replace(
       'dd',
-      this.padLeadingZero(date.getDate()).toString()
+      this.padLeadingZero(date.getDate()).toString(),
     );
 
     let hours = date.getHours();
@@ -141,20 +141,20 @@ export class UtilsService {
     if (format.indexOf('mm') > -1) {
       format = format.replace(
         'mm',
-        this.padLeadingZero(date.getMinutes()).toString()
+        this.padLeadingZero(date.getMinutes()).toString(),
       );
     }
 
     if (format.indexOf('ss') > -1) {
       format = format.replace(
         'ss',
-        this.padLeadingZero(date.getSeconds()).toString()
+        this.padLeadingZero(date.getSeconds()).toString(),
       );
     }
     if (format.indexOf('dd') > -1) {
       format = format.replace(
         'ss',
-        this.padLeadingZero(date.getDay()).toString()
+        this.padLeadingZero(date.getDay()).toString(),
       );
     }
     if (format.indexOf('Z') > -1) {
@@ -164,7 +164,7 @@ export class UtilsService {
         let zone = /.*\s(.+)/.exec(
           new Date()?.toLocaleDateString(navigator.language, {
             timeZoneName: 'short',
-          })
+          }),
         );
         if (zone) {
           timeZone = zone[1];
@@ -360,7 +360,7 @@ export class UtilsService {
     let seconds =
         (Number(
           new Date(currentDate).getTime() +
-            new Date(currentDate).getTimezoneOffset() * 60 * 1000
+            new Date(currentDate).getTimezoneOffset() * 60 * 1000,
         ) -
           time) /
         1000,
@@ -392,20 +392,29 @@ export class UtilsService {
   }
 
   public generateUUID(): string {
-    var d = new Date().getTime();//Timestamp
+    var d = new Date().getTime(); //Timestamp
 
     // Time in microseconds since page-load or 0 if unsupported
-    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var d2 =
+      (typeof performance !== 'undefined' &&
+        performance.now &&
+        performance.now() * 1000) ||
+      0;
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      function (c) {
         var r = Math.random() * 16; //random number between 0 and 16
-        if(d > 0){ //Use timestamp until depleted
-            r = (d + r)%16 | 0;
-            d = Math.floor(d/16);
-        } else { //Use microseconds since page-load if supported
-            r = (d2 + r)%16 | 0;
-            d2 = Math.floor(d2/16);
+        if (d > 0) {
+          //Use timestamp until depleted
+          r = (d + r) % 16 | 0;
+          d = Math.floor(d / 16);
+        } else {
+          //Use microseconds since page-load if supported
+          r = (d2 + r) % 16 | 0;
+          d2 = Math.floor(d2 / 16);
         }
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-}
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      },
+    );
+  }
 }

@@ -2,14 +2,14 @@
 
 Ngx-ResgridLib is an Angular library used by Resgrid in all of our mobile applications and web applications to interact with the Resgrid API. This library is a **foundational element** to all of our applications and contains a large cross-section of code used in building our mobile applications which are written in [Ionic Framework](https://ionicframework.com/) and [Capacitor](https://capacitorjs.com/).
 
-About Resgrid
--------------
-Resgrid is an open-source Computer Aided Dispatch (CAD) solution for first responders, businesses and industrial environments. 
+## About Resgrid
+
+Resgrid is an open-source Computer Aided Dispatch (CAD) solution for first responders, businesses and industrial environments.
 
 [Sign up for your free Resgrid Account Today!](https://resgrid.com)
 
-
 # Features
+
 - **V4 API** compatible with the v4 version of the [Resgrid API](https://api.resgrid.com/index.html?urls.primaryName=Resgrid%20API%20V4)
 - **RxJS** Services for each API utilizing RxJS
 - **Authentication** Library handles the auth flow and storing of the refresh token
@@ -30,32 +30,33 @@ npm install @resgrid/ngx-resgridlib --save
   let getBaseUrl = (): string => {
     return 'http://localhost:8081';
   }
-   
+
   @NgModule({
     declarations: [
       AppComponent
     ],
     imports: [
       ... ,
-   
+
       NgxResgridLibModule.forRoot({
-          baseApiUrl: getBaseUrl, 
-          apiVersion: 'v4', 
-          clientId: 'test', 
-          googleApiKey: '', 
-          channelUrl: '', 
-          channelHubName: '', 
+          baseApiUrl: getBaseUrl,
+          apiVersion: 'v4',
+          clientId: 'test',
+          googleApiKey: '',
+          channelUrl: '',
+          channelHubName: '',
           logLevel: 0
           }),
     ],
     providers: [],
     bootstrap: [ AppComponent ]
   })
-  
+
   export class AppModule { }
-  ```
+```
 
 ### NgxResgridLibModule Options
+
 <table>
   <tr>
     <th>Setting</th>
@@ -104,5 +105,6 @@ npm install @resgrid/ngx-resgridlib --save
   </tr>
 </table>
 
-## License ##
+## License
+
 [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)

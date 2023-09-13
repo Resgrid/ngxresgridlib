@@ -12,7 +12,7 @@ import { SaveCallNoteResult } from '../../models/v4/callNotes/saveCallNoteResult
 export class CallNotesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getCallNotes(callId: string): Observable<CallNotesResult> {
@@ -24,7 +24,7 @@ export class CallNotesService {
     callId: string,
     userId: string,
     note: string,
-    location: GpsLocation
+    location: GpsLocation,
   ): Observable<SaveCallNoteResult> {
     let url = this.config.apiUrl + '/CallNotes/SaveCallNote';
 
@@ -32,8 +32,8 @@ export class CallNotesService {
       CallId: callId,
       UserId: userId,
       Note: note,
-      Latitude: "",
-      Longitude: ""
+      Latitude: '',
+      Longitude: '',
     };
 
     if (location && location != null) {

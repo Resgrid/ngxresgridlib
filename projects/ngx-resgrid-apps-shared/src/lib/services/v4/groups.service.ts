@@ -5,14 +5,13 @@ import { ResgridConfig } from '../../resgrid-config';
 import { GroupResult } from '../../models/v4/groups/groupResult';
 import { GroupsResult } from '../../models/v4/groups/groupsResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class GroupsService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getGroup(groupId: string): Observable<GroupResult> {

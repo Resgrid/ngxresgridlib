@@ -35,7 +35,7 @@ import { LoggerService } from '../logger.service';
 export class AuthService {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
+    null,
   );
 
   private initalState: AuthStateModel = {
@@ -56,23 +56,23 @@ export class AuthService {
     private http: HttpClient,
     private config: ResgridConfig,
     private storageService: StorageService,
-    private logger: LoggerService
+    private logger: LoggerService,
   ) {
     this.state = new BehaviorSubject<AuthStateModel>(this.initalState);
     this.state$ = this.state.asObservable();
 
     this.tokens$ = this.state.pipe(
       filter(
-        (state) => state.authReady != undefined && state.authReady != false
+        (state) => state.authReady != undefined && state.authReady != false,
       ),
-      map((state) => state.tokens)
+      map((state) => state.tokens),
     );
 
     this.profile$ = this.state.pipe(
       filter(
-        (state) => state.authReady != undefined && state.authReady != false
+        (state) => state.authReady != undefined && state.authReady != false,
       ),
-      map((state) => state.profile)
+      map((state) => state.profile),
     );
 
     this.loggedIn$ = this.tokens$.pipe(map((tokens) => !!tokens));
@@ -115,13 +115,13 @@ export class AuthService {
             password: '',
             refresh_token: storedTokens.refresh_token,
           },
-          'refresh_token'
+          'refresh_token',
         );
       } else {
         return this.refreshTokenSubject.pipe(
-          filter(profile => profile !== null),
+          filter((profile) => profile !== null),
           take(1),
-          switchMap((profile) => of(profile))
+          switchMap((profile) => of(profile)),
         );
       }
     }
@@ -156,7 +156,7 @@ export class AuthService {
 
   private getTokens(
     data: LoginModel,
-    grantType: string
+    grantType: string,
   ): Observable<ProfileModel> {
     let headers: HttpHeaders = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/x-www-form-urlencoded');
@@ -196,7 +196,7 @@ export class AuthService {
 
           this.logger.logDebug(
             this.config.clientId,
-            `got token expiration: ${res.expiration_date}`
+            `got token expiration: ${res.expiration_date}`,
           );
 
           const profile: ProfileModel = jwt_decode(res.id_token);
@@ -208,7 +208,7 @@ export class AuthService {
           this.isRefreshing = false;
 
           return profile;
-        })
+        }),
       );
   }
 
@@ -232,7 +232,7 @@ export class AuthService {
         this.logout();
         this.updateState({ authReady: true });
         return of(error);
-      })
+      }),
     );
   }
 
@@ -245,12 +245,12 @@ export class AuthService {
           if (tokens) {
             this.logger.logDebug(
               this.config.clientId,
-              `Will refresh auth token in ${tokens.expires_in * 0.8 * 1000}`
+              `Will refresh auth token in ${tokens.expires_in * 0.8 * 1000}`,
             );
             interval(tokens.expires_in * 0.8 * 1000);
           }
         }),
-        map(() => this.refreshTokens())
+        map(() => this.refreshTokens()),
       )
       .subscribe();
   }

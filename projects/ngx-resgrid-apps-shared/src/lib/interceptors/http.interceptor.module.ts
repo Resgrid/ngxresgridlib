@@ -27,18 +27,18 @@ export const retryCount = 3;
 export class HttpsRequestInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
+    null,
   );
 
   constructor(
     private authService: AuthService,
     private config: ResgridConfig,
-    private logger: LoggerService
+    private logger: LoggerService,
   ) {}
 
   intercept(
     req: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     if (this.shouldAddTokenToRequest(req.url)) {
       const dupReq = this.addAuthHeader(req);
@@ -50,7 +50,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
           }
 
           return throwError(error);
-        })
+        }),
       );
 
       //return next.handle(dupReq).pipe(
@@ -62,7 +62,10 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     return next.handle(req);
   }
 
-  private handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  private handle401Error(
+    req: HttpRequest<any>,
+    next: HttpHandler,
+  ): Observable<HttpEvent<any>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -82,14 +85,14 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
 
           this.authService.logout();
           return throwError(err);
-        })
+        }),
       );
     }
 
     return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
+      filter((token) => token !== null),
       take(1),
-      switchMap((token) => next.handle(this.addAuthHeader(req)))
+      switchMap((token) => next.handle(this.addAuthHeader(req))),
     );
   }
 
@@ -99,7 +102,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
       const dupReq = request.clone({
         headers: request.headers.set(
           'Authorization',
-          'Bearer ' + tokens.access_token
+          'Bearer ' + tokens.access_token,
         ),
       });
 
@@ -112,7 +115,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
   private handleResponseError(
     error: HttpErrorResponse,
     request: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     if (error.status === 400) {
       // Show message
@@ -122,7 +125,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     else if (error.status === 401) {
       this.logger.logDebug(
         this.config.clientId,
-        `In handleResponseError got 401 response: ${request.url}`
+        `In handleResponseError got 401 response: ${request.url}`,
       );
 
       return timer(10000).pipe(
@@ -130,7 +133,7 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
           const dupReq = this.addAuthHeader(request);
 
           return next.handle(dupReq); //.pipe(delay(1500));
-        })
+        }),
       );
     }
 

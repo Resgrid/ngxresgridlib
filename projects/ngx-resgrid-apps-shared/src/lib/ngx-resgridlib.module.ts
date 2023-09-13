@@ -11,29 +11,30 @@ import { HttpInterceptorModule } from './interceptors/http.interceptor.module';
 /**
  * @internal
  */
- export function directives() {
+export function directives() {
   return [
-    OrderByPipe, 
-    GroupByPipe, 
-    TruncatePipe, 
-    RGTimeAgoPipe, 
-    RGTimeAgoUTCPipe, 
+    OrderByPipe,
+    GroupByPipe,
+    TruncatePipe,
+    RGTimeAgoPipe,
+    RGTimeAgoUTCPipe,
     ConversationPipe,
   ];
 }
 
 @NgModule({
-  declarations: directives(), 
-  imports: [
-    HttpInterceptorModule
-  ],
-  exports: directives()})
+  declarations: directives(),
+  imports: [HttpInterceptorModule],
+  exports: directives(),
+})
 export class NgxResgridLibModule {
-    static forRoot(configuration: ResgridASConfiguration) : ModuleWithProviders<NgxResgridLibModule> {
-    return <ModuleWithProviders<NgxResgridLibModule>>({
+  static forRoot(
+    configuration: ResgridASConfiguration,
+  ): ModuleWithProviders<NgxResgridLibModule> {
+    return <ModuleWithProviders<NgxResgridLibModule>>{
       ngModule: NgxResgridLibModule,
       providers: [
-        { 
+        {
           provide: ResgridConfig,
           useFactory: () => {
             let config = new ResgridConfig();
@@ -45,10 +46,10 @@ export class NgxResgridLibModule {
             config.channelHubName = configuration.channelHubName;
             config.logLevel = configuration.logLevel;
 
-            return (config);
-          }
-        }
-      ]
-    });
+            return config;
+          },
+        },
+      ],
+    };
   }
- }
+}

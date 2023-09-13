@@ -6,7 +6,10 @@ import { LoggerService } from './logger.service';
   providedIn: 'root',
 })
 export class StorageService {
-  constructor(private logger: LoggerService, private config: ResgridConfig) {}
+  constructor(
+    private logger: LoggerService,
+    private config: ResgridConfig,
+  ) {}
 
   read(key: string): any {
     const combinedKey = `${this.config.clientId}.${key}`;
@@ -15,16 +18,13 @@ export class StorageService {
     if (storedValue) {
       this.logger.logDebug(
         this.config.clientId,
-        `readKey ${combinedKey} length: ${storedValue.length}`
+        `readKey ${combinedKey} length: ${storedValue.length}`,
       );
 
       return JSON.parse(storedValue);
     }
 
-    this.logger.logDebug(
-      this.config.clientId,
-      `readKey ${combinedKey} empty`
-    );
+    this.logger.logDebug(this.config.clientId, `readKey ${combinedKey} empty`);
 
     return null;
   }
@@ -32,7 +32,7 @@ export class StorageService {
   write(key: string, value: any): boolean {
     localStorage.setItem(
       `${this.config.clientId}.${key}`,
-      JSON.stringify(value)
+      JSON.stringify(value),
     );
 
     return true;

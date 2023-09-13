@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { HealthResult } from '../../models/v4/health/healthResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class HealthService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getCurrent(): Observable<HealthResult> {
@@ -19,8 +18,11 @@ export class HealthService {
     return this.http.get<HealthResult>(url);
   }
 
-  public getCurrentForCustomServer(baseApiUrl: string): Observable<HealthResult> {
-    const url = `${baseApiUrl}/api/${this.config.apiVersion}` + `/Health/GetCurrent`;
+  public getCurrentForCustomServer(
+    baseApiUrl: string,
+  ): Observable<HealthResult> {
+    const url =
+      `${baseApiUrl}/api/${this.config.apiVersion}` + `/Health/GetCurrent`;
     return this.http.get<HealthResult>(url);
   }
 }

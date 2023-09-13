@@ -10,15 +10,22 @@ import { UnitLocationResult } from '../../models/v4/unitLocation/unitLocationRes
   providedIn: 'root',
 })
 export class UnitLocationService {
-  constructor(public http: HttpClient, private config: ResgridConfig) {}
+  constructor(
+    public http: HttpClient,
+    private config: ResgridConfig,
+  ) {}
 
-  public saveUnitLocation(input: SaveUnitLocationInput): Observable<SaveUnitLocationResult> {
+  public saveUnitLocation(
+    input: SaveUnitLocationInput,
+  ): Observable<SaveUnitLocationResult> {
     let url = this.config.apiUrl + '/UnitLocation/SetUnitLocation';
     return this.http.post<SaveUnitLocationResult>(url, input);
   }
 
   public getLatestUnitLocation(unitId: string): Observable<UnitLocationResult> {
-    const url = this.config.apiUrl + `/UnitLocation/GetLatestUnitLocation?unitId=${unitId}`;
+    const url =
+      this.config.apiUrl +
+      `/UnitLocation/GetLatestUnitLocation?unitId=${unitId}`;
     return this.http.get<UnitLocationResult>(url);
   }
 }

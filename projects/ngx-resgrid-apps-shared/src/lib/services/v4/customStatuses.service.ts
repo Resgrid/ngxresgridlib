@@ -10,7 +10,7 @@ import { CustomStatusesResult } from '../../models/v4/customStatuses/customStatu
 export class CustomStatusesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllCustomStatuses(): Observable<CustomStatusesResult> {
@@ -19,17 +19,20 @@ export class CustomStatusesService {
   }
 
   public getActivePersonnelStatuses(): Observable<CustomStatusesResult> {
-    const url = this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStatuses';
+    const url =
+      this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStatuses';
     return this.http.get<CustomStatusesResult>(url);
   }
 
   public getActivePersonnelStaffingLevels(): Observable<CustomStatusesResult> {
-    const url = this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStaffingLevels';
+    const url =
+      this.config.apiUrl + '/CustomStatuses/GetActivePersonnelStaffingLevels';
     return this.http.get<CustomStatusesResult>(url);
   }
 
   public getActiveUnitStatesLevels(): Observable<CustomStatusesResult> {
-    const url = this.config.apiUrl + '/CustomStatuses/GetActiveUnitStatesLevels';
+    const url =
+      this.config.apiUrl + '/CustomStatuses/GetActiveUnitStatesLevels';
     return this.http.get<CustomStatusesResult>(url);
   }
 }

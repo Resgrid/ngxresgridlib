@@ -12,26 +12,26 @@ import { SaveCallFileResult } from '../../models/v4/callFiles/saveCallFileResult
 export class CallFilesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getCallImages(
     callId: string,
-    includeData: boolean
+    includeData: boolean,
   ): Observable<CallFilesResult> {
     return this.getFiles(callId, includeData, 2);
   }
 
   public getCallFiles(
     callId: string,
-    includeData: boolean
+    includeData: boolean,
   ): Observable<CallFilesResult> {
     return this.getFiles(callId, includeData, 3);
   }
 
   public getCallAudio(
     callId: string,
-    includeData: boolean
+    includeData: boolean,
   ): Observable<CallFilesResult> {
     return this.getFiles(callId, includeData, 1);
   }
@@ -39,7 +39,7 @@ export class CallFilesService {
   public getFiles(
     callId: string,
     includeData: boolean,
-    type: number
+    type: number,
   ): Observable<CallFilesResult> {
     const url = this.config.apiUrl + `/CallFiles/GetFilesForCall`;
     let params = new HttpParams()
@@ -47,11 +47,7 @@ export class CallFilesService {
       .append('includeData', includeData.toString())
       .append('type', type.toString());
 
-    return this.http
-      .get<CallFilesResult>(
-        url,
-        { params: params }
-      );
+    return this.http.get<CallFilesResult>(url, { params: params });
   }
 
   public saveCallImage(
@@ -60,7 +56,7 @@ export class CallFilesService {
     note: string,
     name: string,
     location: GpsLocation,
-    file: string
+    file: string,
   ): Observable<SaveCallFileResult> {
     return this.saveFile(callId, userId, note, name, location, file, 2);
   }
@@ -71,7 +67,7 @@ export class CallFilesService {
     note: string,
     name: string,
     location: GpsLocation,
-    file: string
+    file: string,
   ): Observable<SaveCallFileResult> {
     return this.saveFile(callId, userId, note, name, location, file, 3);
   }
@@ -83,7 +79,7 @@ export class CallFilesService {
     name: string,
     location: GpsLocation,
     file: string,
-    type: number
+    type: number,
   ): Observable<SaveCallFileResult> {
     const url = this.config.apiUrl + `/CallFiles/SaveCallFile`;
 
@@ -92,8 +88,8 @@ export class CallFilesService {
       UserId: userId,
       Type: type,
       Name: name,
-      Latitude: "",
-      Longitude: "",
+      Latitude: '',
+      Longitude: '',
       Note: note,
       Data: file,
     };

@@ -9,22 +9,25 @@ import { SavePersonsStatusesInput } from '../../models/v4/personnelStatuses/save
 import { SavePersonsStatusesResult } from '../../models/v4/personnelStatuses/savePersonsStatusesResult';
 import { GetCurrentStatusResult } from '../../models/v4/personnelStatuses/getCurrentStatusResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class PersonnelStatusesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getCurrentStatus(userId: string): Observable<GetCurrentStatusResult> {
-    const url = this.config.apiUrl + `/PersonnelStatuses/GetCurrentStatus?userId=${userId}`;
+    const url =
+      this.config.apiUrl +
+      `/PersonnelStatuses/GetCurrentStatus?userId=${userId}`;
     return this.http.get<GetCurrentStatusResult>(url);
   }
 
-  public savePersonStatus(data: SavePersonStatusInput): Observable<SavePersonStatusResult> {
+  public savePersonStatus(
+    data: SavePersonStatusInput,
+  ): Observable<SavePersonStatusResult> {
     const url = this.config.apiUrl + '/PersonnelStatuses/SavePersonStatus';
 
     if (!data.RespondingTo) {
@@ -34,7 +37,9 @@ export class PersonnelStatusesService {
     return this.http.post<SavePersonStatusResult>(url, data);
   }
 
-  public savePersonsStatuses(data: SavePersonsStatusesInput): Observable<SavePersonsStatusesResult> {
+  public savePersonsStatuses(
+    data: SavePersonsStatusesInput,
+  ): Observable<SavePersonsStatusesResult> {
     const url = this.config.apiUrl + '/PersonnelStatuses/SavePersonsStatuses';
 
     if (!data.RespondingTo) {

@@ -7,14 +7,13 @@ import { SaveUnitStatusInput } from '../../models/v4/unitStatus/saveUnitStatusIn
 import { SaveUnitStatusResult } from '../../models/v4/unitStatus/saveUnitStatusResult';
 import { UnitStatusResult } from '../../models/v4/unitStatus/unitStatusResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class UnitStatusService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllUnitStatuses(): Observable<UnitStatusesResult> {
@@ -23,11 +22,14 @@ export class UnitStatusService {
   }
 
   public getUnitStatus(unitId: string): Observable<UnitStatusResult> {
-    const url = this.config.apiUrl + `/UnitStatus/GetUnitStatus?unitId=${unitId}`;
+    const url =
+      this.config.apiUrl + `/UnitStatus/GetUnitStatus?unitId=${unitId}`;
     return this.http.get<UnitStatusResult>(url);
   }
 
-  public saveUnitStatus(data: SaveUnitStatusInput): Observable<SaveUnitStatusResult> {
+  public saveUnitStatus(
+    data: SaveUnitStatusInput,
+  ): Observable<SaveUnitStatusResult> {
     const url = this.config.apiUrl + '/UnitStatus/SaveUnitStatus';
 
     if (!data.RespondingTo) {

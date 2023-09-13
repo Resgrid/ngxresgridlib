@@ -16,7 +16,10 @@ import { CallResult } from '../../models/v4/calls/callResult';
   providedIn: 'root',
 })
 export class CallsService {
-  constructor(public http: HttpClient, private config: ResgridConfig) {}
+  constructor(
+    public http: HttpClient,
+    private config: ResgridConfig,
+  ) {}
 
   public getActiveCalls(): Observable<ActiveCallsResult> {
     const url = this.config.apiUrl + '/Calls/GetActiveCalls';
@@ -55,7 +58,7 @@ export class CallsService {
     longitude: number,
     dispatchList: string,
     dispatchOn: string,
-    callFormData: string
+    callFormData: string,
   ): Observable<SaveCallResult> {
     let url = this.config.apiUrl + '/Calls/SaveCall';
 
@@ -98,7 +101,7 @@ export class CallsService {
     dispatchList: string,
     dispatchOn: string,
     callFormData: string,
-    redispatch: boolean
+    redispatch: boolean,
   ): Observable<UpdateCallResult> {
     let url = this.config.apiUrl + '/Calls/EditCall';
     let coordinates = '';
@@ -130,31 +133,33 @@ export class CallsService {
 
   public updateCallDisptachTime(
     callId: string,
-    date: string
+    date: string,
   ): Observable<UpdateDispatchTimeResult> {
     let url = this.config.apiUrl + '/Calls/UpdateScheduledDispatchTime';
 
     return this.http.put<UpdateDispatchTimeResult>(url, {
       Id: callId,
-      Date: date
+      Date: date,
     });
   }
 
-  public deleteCall(
-    callId: string
-  ): Observable<DeleteCallResult> {
+  public deleteCall(callId: string): Observable<DeleteCallResult> {
     let url = this.config.apiUrl + `/Calls/DeleteCall?callId=${callId}`;
 
     return this.http.delete<DeleteCallResult>(url);
   }
 
-  public closeCall(callId: string, note: string, type: number): Observable<CloseCallResult> {
+  public closeCall(
+    callId: string,
+    note: string,
+    type: number,
+  ): Observable<CloseCallResult> {
     let url = this.config.apiUrl + `/Calls/CloseCall`;
 
     return this.http.put<CloseCallResult>(url, {
       Id: callId,
       Notes: note,
-      Type: type
+      Type: type,
     });
   }
 }

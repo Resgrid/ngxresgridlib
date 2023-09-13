@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { RolesResult } from '../../models/v4/roles/rolesResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class RolesService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getAllRoles(): Observable<RolesResult> {

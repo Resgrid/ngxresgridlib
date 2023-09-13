@@ -1,9 +1,9 @@
 export class GpsLocation {
-    public Latitude: number;
-    public Longitude: number;
+  public Latitude: number;
+  public Longitude: number;
 
-    constructor(latitude: number, longitude: number) {
-        this.Latitude = latitude;
-        this.Longitude = longitude;
-    }
+  constructor(latitude: number, longitude: number) {
+    this.Latitude = latitude;
+    this.Longitude = longitude;
+  }
 }

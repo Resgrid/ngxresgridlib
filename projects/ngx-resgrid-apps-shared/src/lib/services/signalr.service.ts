@@ -92,7 +92,7 @@ export class SignalRService {
   constructor(
     private config: ResgridConfig,
     private events: EventsService,
-    private consts: Consts
+    private consts: Consts,
   ) {
     // Set up our observables
     //
@@ -136,7 +136,7 @@ export class SignalRService {
           console.log('PersonnelStatusUpdated');
           this.events.publishEvent(
             this.consts.SIGNALR_EVENTS.PERSONNEL_STATUS_UPDATED,
-            data
+            data,
           );
         });
 
@@ -144,7 +144,7 @@ export class SignalRService {
           console.log('PersonnelStaffingUpdated');
           this.events.publishEvent(
             this.consts.SIGNALR_EVENTS.PERSONNEL_STAFFING_UPDATED,
-            data
+            data,
           );
         });
 
@@ -152,7 +152,7 @@ export class SignalRService {
           console.log('UnitStatusUpdated');
           this.events.publishEvent(
             this.consts.SIGNALR_EVENTS.UNIT_STATUS_UPDATED,
-            data
+            data,
           );
         });
 
@@ -160,7 +160,7 @@ export class SignalRService {
           console.log('CallsUpdated');
           this.events.publishEvent(
             this.consts.SIGNALR_EVENTS.CALLS_UPDATED,
-            data
+            data,
           );
         });
 
@@ -173,7 +173,7 @@ export class SignalRService {
           console.log('CallClosed');
           this.events.publishEvent(
             this.consts.SIGNALR_EVENTS.CALL_CLOSED,
-            data
+            data,
           );
         });
 
@@ -192,12 +192,12 @@ export class SignalRService {
               ?.invoke('connect', parseInt(departmentId))
               .then(() => {
                 console.log(
-                  `Successfully subscribed to Connect channel with ${departmentId}`
+                  `Successfully subscribed to Connect channel with ${departmentId}`,
                 );
               })
               .catch((error: any) => {
                 console.log(
-                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`
+                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`,
                 );
               });
 
@@ -227,12 +227,12 @@ export class SignalRService {
               ?.invoke('connect', parseInt(departmentId))
               .then(() => {
                 console.log(
-                  `Successfully subscribed to Connect channel with ${departmentId}`
+                  `Successfully subscribed to Connect channel with ${departmentId}`,
                 );
               })
               .catch((error: any) => {
                 console.log(
-                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`
+                  `Error subscribed to Connect channel with ${departmentId}, ERROR: ${error}`,
                 );
               });
 
@@ -252,17 +252,19 @@ export class SignalRService {
 
   public stop() {
     if (this.hubConnection) {
-      this.hubConnection.stop().then(() => {
-        console.log('Connection stopped');
-        this.connectionStateObserver?.next(ConnectionState.Disconnected);
-        this.started = false;
-      })
-      .catch((err) => {
-        console.log('Error while starting connection: ' + err);
-        this.connectionStateObserver?.next(ConnectionState.Disconnected);
-        this.started = false;
-        this.errorSubject.next(err);
-      });
+      this.hubConnection
+        .stop()
+        .then(() => {
+          console.log('Connection stopped');
+          this.connectionStateObserver?.next(ConnectionState.Disconnected);
+          this.started = false;
+        })
+        .catch((err) => {
+          console.log('Error while starting connection: ' + err);
+          this.connectionStateObserver?.next(ConnectionState.Disconnected);
+          this.started = false;
+          this.errorSubject.next(err);
+        });
     }
   }
 
@@ -270,12 +272,14 @@ export class SignalRService {
     this.hubConnection
       ?.invoke('SubscribeToDepartmentLink', linkId)
       .then(() =>
-        console.log(`Successfully subscribed to department link with ${linkId}`)
+        console.log(
+          `Successfully subscribed to department link with ${linkId}`,
+        ),
       )
       .catch((err) =>
         console.log(
-          `Error subscribed to department link with ${linkId}, ERROR: ${err}`
-        )
+          `Error subscribed to department link with ${linkId}, ERROR: ${err}`,
+        ),
       );
   }
 
@@ -285,7 +289,7 @@ export class SignalRService {
    * */
   private sub(
     channel: string,
-    data?: string
+    data?: string,
   ): Observable<ChannelEvent> | undefined {
     // Try to find an observable that we already created for the requested
     //  channel
@@ -327,14 +331,14 @@ export class SignalRService {
           ?.invoke(channel, data)
           .then(() =>
             console.log(
-              `Successfully subscribed to ${channel} channel with ${data}`
-            )
+              `Successfully subscribed to ${channel} channel with ${data}`,
+            ),
           )
           .catch((err) => channelSub?.subject?.error(err));
       },
       (error: any) => {
         channelSub?.subject?.error(error);
-      }
+      },
     );
 
     return channelSub.subject.asObservable();

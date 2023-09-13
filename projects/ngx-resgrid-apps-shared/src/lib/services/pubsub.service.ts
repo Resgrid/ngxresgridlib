@@ -1,7 +1,14 @@
 // from https://github.com/paritosh64ce/ngx-pub-sub/blob/master/libs/ngx-pub-sub/src/lib/types/subject-type.enum.ts
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, SchedulerLike, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  ReplaySubject,
+  SchedulerLike,
+  Subject,
+  Subscription,
+} from 'rxjs';
 
 export interface IHash {
   [key: string]: {
@@ -17,8 +24,8 @@ export enum SubjectType {
 }
 
 @Injectable({
-    providedIn: 'root',
-  })
+  providedIn: 'root',
+})
 export class PubSubService implements OnDestroy {
   private eventObservableMapping: IHash;
 
@@ -37,7 +44,7 @@ export class PubSubService implements OnDestroy {
     eventName: string,
     next?: (value: any) => void,
     error?: (error: any) => any,
-    complete?: () => void
+    complete?: () => void,
   ): Subscription {
     this.validateEventName(eventName);
     // subject will be created if the provided eventName is not registered
@@ -46,7 +53,7 @@ export class PubSubService implements OnDestroy {
     return this.eventObservableMapping[eventName].ref.subscribe(
       next,
       error,
-      complete
+      complete,
     );
   }
 
@@ -77,7 +84,7 @@ export class PubSubService implements OnDestroy {
     name: string,
     bufferSize?: number,
     windowTime?: number,
-    scheduler?: SchedulerLike
+    scheduler?: SchedulerLike,
   ) {
     this.validateEventName(name);
     // type and name check
@@ -118,7 +125,7 @@ export class PubSubService implements OnDestroy {
   private publishNext(
     eventName: string,
     type: SubjectType = SubjectType.Subject,
-    data?: any
+    data?: any,
   ) {
     this.checkType(eventName, type);
     this.eventObservableMapping[eventName].ref.next(data);
@@ -127,7 +134,7 @@ export class PubSubService implements OnDestroy {
   private checkType(
     eventName: string,
     type: SubjectType = SubjectType.Subject,
-    shouldNotExist = false
+    shouldNotExist = false,
   ) {
     const object = this.eventObservableMapping[eventName];
     let errorMessage;

@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { GetMapDataAndMarkersResult } from '../../models/v4/mapping/getMapDataAndMarkersResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class MappingService {
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public getMapDataAndMarkers(): Observable<GetMapDataAndMarkersResult> {

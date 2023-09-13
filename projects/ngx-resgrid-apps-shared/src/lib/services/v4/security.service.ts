@@ -5,7 +5,6 @@ import { ResgridConfig } from '../../resgrid-config';
 import { map, tap } from 'rxjs/operators';
 import { DepartmentRightsResult } from '../../models/v4/security/departmentRightsResult';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -19,12 +18,13 @@ export class SecurityService {
 
   constructor(
     public http: HttpClient,
-    private config: ResgridConfig
+    private config: ResgridConfig,
   ) {}
 
   public applySecurityRights(): Observable<DepartmentRightsResult> {
     return this.getCurrentUsersRights().pipe(
-        tap(data => this.setRights(data)));
+      tap((data) => this.setRights(data)),
+    );
   }
 
   private setRights(data: DepartmentRightsResult): void {

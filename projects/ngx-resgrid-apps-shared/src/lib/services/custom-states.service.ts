@@ -12,7 +12,7 @@ export class CustomStatesService {
 
   constructor(
     private consts: Consts,
-    private customStatusesService: CustomStatusesService
+    private customStatusesService: CustomStatusesService,
   ) {}
 
   public init() {
@@ -48,7 +48,8 @@ export class CustomStatesService {
   }
 
   private getCustomStatuses(customType: any, activeOnly: boolean) {
-    const filteredStatuses: CustomStatusResultData[] = new Array<CustomStatusResultData>();
+    const filteredStatuses: CustomStatusResultData[] =
+      new Array<CustomStatusResultData>();
 
     if (this.statuses) {
       this.statuses.forEach((element) => {
