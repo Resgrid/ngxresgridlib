@@ -24,4 +24,14 @@ export class NotesService {
     const url = this.config.apiUrl + '/Notes/GetDispatchNote';
     return this.http.get<NoteResult>(url);
   }
+
+  public getAllUnexpiredNotesByCategory(category: string, includeUnCategorized: boolean): Observable<NotesResult> {
+    const url = this.config.apiUrl + `/Notes/GetAllUnexpiredNotesByCategory?category=${category}&includeUnCategorized=${includeUnCategorized}`;
+    return this.http.get<NotesResult>(url);
+  }
+
+  public getNote(noteId: string): Observable<NoteResult> {
+    const url = this.config.apiUrl + '/Notes/GetNote?noteId=' + noteId;
+    return this.http.get<NoteResult>(url);
+  }
 }
