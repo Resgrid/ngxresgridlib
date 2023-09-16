@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { ResgridConfig } from '../../resgrid-config';
 import { NotesResult } from '../../models/v4/notes/notesResult';
 import { NoteResult } from '../../models/v4/notes/noteResult';
+import { NoteCategoryResult } from '../../models/v4/notes/noteCategoryResult';
+import { SaveNoteResult } from '../../models/v4/notes/saveNoteResult';
 
 
 @Injectable({
@@ -33,5 +35,21 @@ export class NotesService {
   public getNote(noteId: string): Observable<NoteResult> {
     const url = this.config.apiUrl + '/Notes/GetNote?noteId=' + noteId;
     return this.http.get<NoteResult>(url);
+  }
+
+  public getNoteCategories(): Observable<NoteCategoryResult> {
+    const url = this.config.apiUrl + '/Notes/GetNoteCategories';
+    return this.http.get<NoteCategoryResult>(url);
+  }
+
+  public saveNote(title: string, body: string, category: string, isAdminOnly: boolean, expiresOn: string): Observable<SaveNoteResult> {
+    const url = this.config.apiUrl + '/Notes/SaveNote';
+    return this.http.post<SaveNoteResult>(url, {
+      Title: title,
+      Body: body,
+      Category: category,
+      IsAdminOnly: isAdminOnly,
+      ExpiresOn: expiresOn
+    });
   }
 }
