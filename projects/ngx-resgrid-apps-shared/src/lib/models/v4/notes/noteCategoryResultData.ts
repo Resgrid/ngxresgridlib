@@ -1,4 +1,4 @@
-export class NoteCategoryResultData  {
-    public NoteCategoryId: string = '';
-    public Category: string = '';
+export class NoteCategoryResultData {
+  public NoteCategoryId: string = '';
+  public Category: string = '';
 }
