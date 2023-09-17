@@ -30,8 +30,7 @@ export class NotesService {
     category: string,
     includeUnCategorized: boolean,
   ): Observable<NotesResult> {
-    const url =
-      this.config.apiUrl +
+    const url = this.config.apiUrl +
       `/Notes/GetAllUnexpiredNotesByCategory?category=${category}&includeUnCategorized=${includeUnCategorized}`;
     return this.http.get<NotesResult>(url);
   }
