@@ -7,33 +7,40 @@ import { RGTimeAgoUTCPipe } from './directives/rgTimeAgoUtc.directive';
 import { TruncatePipe } from './directives/truncate.directive';
 import { ResgridASConfiguration, ResgridConfig } from './resgrid-config';
 import { HttpInterceptorModule } from './interceptors/http.interceptor.module';
+import { WebCacheProvider } from './providers/webcache.provider';
 
 /**
  * @internal
  */
- export function directives() {
+export function directives() {
   return [
-    OrderByPipe, 
-    GroupByPipe, 
-    TruncatePipe, 
-    RGTimeAgoPipe, 
-    RGTimeAgoUTCPipe, 
+    OrderByPipe,
+    GroupByPipe,
+    TruncatePipe,
+    RGTimeAgoPipe,
+    RGTimeAgoUTCPipe,
     ConversationPipe,
   ];
 }
 
 @NgModule({
-  declarations: directives(), 
-  imports: [
-    HttpInterceptorModule
-  ],
-  exports: directives()})
+  declarations: directives(),
+  imports: [HttpInterceptorModule],
+  exports: directives(),
+})
 export class NgxResgridLibModule {
-    static forRoot(configuration: ResgridASConfiguration) : ModuleWithProviders<NgxResgridLibModule> {
-    return <ModuleWithProviders<NgxResgridLibModule>>({
+  static forRoot(
+    configuration: ResgridASConfiguration
+  ): ModuleWithProviders<NgxResgridLibModule> {
+
+    //if (configuration && !configuration.cacheProvider) {
+    //  configuration.cacheProvider = new WebCacheProvider();
+    //}
+
+    return <ModuleWithProviders<NgxResgridLibModule>>{
       ngModule: NgxResgridLibModule,
       providers: [
-        { 
+        {
           provide: ResgridConfig,
           useFactory: () => {
             let config = new ResgridConfig();
@@ -43,12 +50,18 @@ export class NgxResgridLibModule {
             config.googleApiKey = configuration.googleApiKey;
             config.channelUrl = configuration.channelUrl;
             config.channelHubName = configuration.channelHubName;
+            config.realtimeGeolocationHubName = configuration.realtimeGeolocationHubName;
             config.logLevel = configuration.logLevel;
+            config.isMobileApp = configuration.isMobileApp;
 
-            return (config);
-          }
-        }
-      ]
-    });
+            return config;
+          },
+        },
+        { 
+          provide: 'RG_CACHE_PROVIDER', 
+          useValue: configuration.cacheProvider 
+        },
+      ],
+    };
   }
- }
+}

@@ -59,6 +59,11 @@ export class CallsService {
   ): Observable<SaveCallResult> {
     let url = this.config.apiUrl + '/Calls/SaveCall';
 
+    let coordinates = '';
+    if (latitude && latitude != 0 && longitude && longitude != 0) {
+      coordinates = `${latitude},${longitude}`;
+    }
+
     return this.http.post<SaveCallResult>(url, {
       Priority: priority,
       Type: type,
@@ -70,7 +75,7 @@ export class CallsService {
       Name: name,
       Nature: nature,
       Note: notes,
-      Geolocation: `${latitude},${longitude}`,
+      Geolocation: coordinates,
       Address: address,
       What3Words: w3w,
       DispatchList: dispatchList,
@@ -103,7 +108,7 @@ export class CallsService {
     let url = this.config.apiUrl + '/Calls/EditCall';
     let coordinates = '';
     if (latitude && latitude != 0 && longitude && longitude != 0) {
-      coordinates = latitude + ',' + longitude;
+      coordinates = `${latitude},${longitude}`;
     }
 
     return this.http.put<UpdateCallResult>(url, {
@@ -118,7 +123,7 @@ export class CallsService {
       Name: name,
       Nature: nature,
       Note: notes,
-      Geolocation: `${latitude},${longitude}`,
+      Geolocation: coordinates,
       Address: address,
       What3Words: w3w,
       DispatchList: dispatchList,

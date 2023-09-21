@@ -34,6 +34,8 @@ export class Consts {
     CALLS_UPDATED: 'CallsUpdated',
     CALL_ADDED: 'CallAdded',
     CALL_CLOSED: 'CallClosed',
+    PERSONNEL_LOCATION_UPDATED: 'PersonnelLocationUpdated',
+    UNIT_LOCATION_UPDATED: 'UnitLocationUpdated',
   };
 
   public DOCTYPES = {

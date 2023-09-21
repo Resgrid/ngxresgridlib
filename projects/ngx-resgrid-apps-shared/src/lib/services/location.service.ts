@@ -7,13 +7,13 @@ import {
   ReplaySubject,
   throwError,
 } from 'rxjs';
-import { map, multicast, switchMap } from 'rxjs/operators';
+import { map, multicast, switchMap, publishReplay } from 'rxjs/operators';
 import { GpsLocation } from '../models/gpsLocation';
-import { Coordinate } from 'tsgeo/Coordinate';
-import { Vincenty } from 'tsgeo/Distance/Vincenty';
 import { WindowRef } from './window.service';
 import { DocumentRef } from './document.service';
 import { ResgridConfig } from '../resgrid-config';
+import { Coordinate } from '../models/geo/Coordinate';
+import { Vincenty } from '../models/geo/Distance/Vincenty';
 
 @Injectable({
   providedIn: 'root',
@@ -21,12 +21,12 @@ import { ResgridConfig } from '../resgrid-config';
 export class LocationService {
   protected readonly geocoder$: Observable<google.maps.Geocoder>;
 
-  constructor(loader: LazyGoogleMapsAPILoader) {
+  constructor(loader: LazyGoogleMapsLoader) {
     const connectableGeocoder$ = new Observable((subscriber) => {
       loader.load().then(() => subscriber.next());
     }).pipe(
       map(() => this._createGeocoder()),
-      multicast(new ReplaySubject(1))
+      publishReplay(1)
     ) as ConnectableObservable<google.maps.Geocoder>;
 
     connectableGeocoder$.connect(); // ignore the subscription
@@ -55,13 +55,30 @@ export class LocationService {
     );
   }
 
-  private geocode(request: google.maps.GeocoderRequest): Observable<google.maps.GeocoderResult[]> {
+  private geocode(
+    request: google.maps.GeocoderRequest
+  ): Observable<google.maps.GeocoderResult[]> {
     return this.geocoder$.pipe(
       switchMap((geocoder) => this._getGoogleResults(geocoder, request))
     );
   }
 
-  public getCoordinatesForAddressFromGoogle(address: string): Observable<GpsLocation | null> {
+  public getAddressFromLocation(location: GpsLocation) {
+    return this.geocode({
+      location: new google.maps.LatLng(location.Latitude, location.Longitude),
+    }).pipe(
+      map((data) => {
+        if (data && data.length > 0) {
+          //console.log(JSON.stringify(data));
+          return data[0].formatted_address;
+        }
+
+        return null;
+      })
+    );
+  }
+
+  public getLocationFromAddress(address: string) {
     return this.geocode({ address: address }).pipe(
       map((data) => {
         if (data && data.length > 0) {
@@ -74,8 +91,28 @@ export class LocationService {
         return null;
       })
     );
-  }
 
+    ////var geocoder = new Geocoder({
+    //  key: environment.osmMapKey,
+    //});
+    //const that = this;
+
+    //return new Observable((observer) => {
+    //  geocoder.geocode(address).then(function (results) {
+    //    if (results) {
+    //    //  console.log(JSON.stringify(results));
+    //console.log(results.features[0]);
+    //return results;
+    //return that.parseMapTilerResults(results);
+    //      let gpsLocation = that.parseMapTilerResults(results);
+    //      observer.next(gpsLocation);
+    //      observer.complete();
+    //    } else {
+    //      observer.error("No results");
+    //    }
+    //  });
+    //});
+  }
 
   public getDistanceBetweenTwoPoints(
     point1: GpsLocation,
@@ -87,25 +124,44 @@ export class LocationService {
     let calculator = new Vincenty();
     return calculator.getDistance(coordinate1, coordinate2);
   }
+
+  private parseMapTilerResults(results: any): GpsLocation | null {
+    if (results && results.features && results.features.length > 0) {
+      for (let index = 0; index < results.features.length; index++) {
+        const feature = results.features[index];
+
+        if (this.doesMapTilerPlaceTypeContain('street', feature.place_type)) {
+          if (feature.center && feature.center.length === 2) {
+            return new GpsLocation(feature.center[1], feature.center[0]);
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private doesMapTilerPlaceTypeContain(searchFor: string, placeTypes: any[]) {
+    if (searchFor && placeTypes && placeTypes.length > 0) {
+      return placeTypes.find((placeType) => {
+        return placeType === searchFor;
+      });
+    }
+  }
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class LazyGoogleMapsAPILoader {
+export class LazyGoogleMapsLoader {
   protected _scriptLoadingPromise: any;
-  protected _windowRef: WindowRef;
-  protected _documentRef: DocumentRef;
   protected readonly _SCRIPT_ID: string = 'googleMapsApiScript';
   protected readonly callbackName: string = `lazyMapsAPILoader`;
 
-  constructor(w: WindowRef, d: DocumentRef, private config: ResgridConfig) {
-    this._windowRef = w;
-    this._documentRef = d;
-  }
+  constructor(private config: ResgridConfig) {}
 
   load(): Promise<void> {
-    const window = this._windowRef.nativeWindow() as any;
+    //const window = this._windowRef.nativeWindow() as any;
     if (window.google && window.google.maps) {
       // Google maps already loaded on the page.
       return Promise.resolve();
@@ -116,28 +172,26 @@ export class LazyGoogleMapsAPILoader {
     }
 
     // this can happen in HMR situations or Stackblitz.io editors.
-    const scriptOnPage = this._documentRef
-      .nativeDocument()
-      .getElementById(this._SCRIPT_ID);
+    const scriptOnPage = document.getElementById(this._SCRIPT_ID);
     if (scriptOnPage) {
       this._assignScriptLoadingPromise(scriptOnPage);
       return this._scriptLoadingPromise;
     }
 
-    const script = this._documentRef.nativeDocument().createElement('script');
+    const script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
     script.defer = true;
     script.id = this._SCRIPT_ID;
     script.src = this._getScriptSrc(this.callbackName);
     this._assignScriptLoadingPromise(script);
-    this._documentRef.nativeDocument().body.appendChild(script);
+    document.body.appendChild(script);
     return this._scriptLoadingPromise;
   }
 
   private _assignScriptLoadingPromise(scriptElem: HTMLElement) {
     this._scriptLoadingPromise = new Promise((resolve, reject) => {
-      this._windowRef.nativeWindow()[this.callbackName] = () => {
+      window[this.callbackName] = () => {
         resolve(true);
       };
 

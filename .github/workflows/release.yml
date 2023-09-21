@@ -13,12 +13,12 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: "16.x"
       - run: npm install -g @angular/cli
       - run: npm ci
       - run: npm ci
         working-directory: ./projects/ngx-resgrid-apps-shared
-      - run: ng build NgxResgridLib --configuration production
+      - run: ng build ngx-resgridlib --configuration production
       - run: npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

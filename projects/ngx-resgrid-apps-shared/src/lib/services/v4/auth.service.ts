@@ -2,18 +2,16 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  from,
   interval,
   Observable,
   of,
   Subscription,
+  throwError,
 } from 'rxjs';
 import {
   catchError,
   filter,
-  flatMap,
   map,
-  mergeMap,
   switchMap,
   take,
   tap,
@@ -30,7 +28,7 @@ import { StorageService } from '../storage.service';
 import { LoggerService } from '../logger.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   private isRefreshing = false;
@@ -95,7 +93,7 @@ export class AuthService {
   }
 
   public refreshTokens(): Observable<ProfileModel | null> {
-    this.logger.logDebug(this.config.clientId, 'Starting refresh token flow');
+    this.logger.logDebug('Starting refresh token flow');
 
     const storedTokens = this.retrieveTokens();
 
@@ -107,7 +105,7 @@ export class AuthService {
       if (!this.isRefreshing) {
         this.isRefreshing = true;
 
-        this.logger.logDebug(this.config.clientId, 'Retrived stored tokens');
+        this.logger.logDebug('Retrieved stored tokens');
 
         return this.getTokens(
           {
@@ -126,7 +124,7 @@ export class AuthService {
       }
     }
 
-    this.logger.logDebug(this.config.clientId, 'No stored tokens retrived');
+    this.logger.logDebug('No stored tokens retrieved');
     return of(null);
   }
 
@@ -139,10 +137,13 @@ export class AuthService {
     this.storageService.write('auth-tokens', tokens);
   }
 
-  public retrieveTokens(): AuthTokenModel {
+  public retrieveTokens(): AuthTokenModel | null {
     var tokens = this.storageService.read('auth-tokens');
 
-    return tokens as AuthTokenModel;
+    if (tokens) {
+      return tokens as AuthTokenModel;
+    }
+    return null;
   }
 
   private removeToken(): void {
@@ -166,22 +167,21 @@ export class AuthService {
     });
 
     params = params.set('grant_type', grantType);
-    // params = params.append('scope', 'openid profile email dataEventRecords offline_access');
-
-    if (this.config.isMobileApp) {
-      params = params.append('scope', 'openid profile offline_access mobile');
-    } else {
-      params = params.append('scope', 'openid profile offline_access');
-    }
 
     if (data.refresh_token && data.refresh_token.length > 0) {
       params = params.append('refresh_token', data.refresh_token);
     } else {
+      if (this.config.isMobileApp) {
+        params = params.append('scope', 'openid profile offline_access mobile');
+      } else {
+        params = params.append('scope', 'openid profile offline_access');
+      }
+
       params = params.append('username', data.username);
       params = params.append('password', data.password);
     }
 
-    this.logger.logDebug(this.config.clientId, 'performing token connection');
+    this.logger.logDebug('performing token connection');
 
     return this.http
       .post<AuthTokenModel>(`${this.config.apiUrl}/connect/token`, params, {
@@ -195,7 +195,6 @@ export class AuthService {
             .toString();
 
           this.logger.logDebug(
-            this.config.clientId,
             `got token expiration: ${res.expiration_date}`
           );
 
@@ -204,17 +203,24 @@ export class AuthService {
           this.storeToken(res);
           this.updateState({ authReady: true, tokens: res, profile });
 
-          this.refreshTokenSubject.next(profile);
           this.isRefreshing = false;
+          this.refreshTokenSubject.next(profile);
 
           return profile;
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(null);
+
+          //this.authService.logout();
+          return throwError(err);
         })
       );
   }
 
   private startupTokenRefresh(): Observable<AuthTokenModel> {
     return of(this.retrieveTokens()).pipe(
-      map((tokens: AuthTokenModel) => {
+      map((tokens: AuthTokenModel | null) => {
         if (!tokens) {
           this.updateState({ authReady: true });
           return of('No token in Storage');
@@ -244,7 +250,6 @@ export class AuthService {
         map((tokens: AuthTokenModel | undefined) => {
           if (tokens) {
             this.logger.logDebug(
-              this.config.clientId,
               `Will refresh auth token in ${tokens.expires_in * 0.8 * 1000}`
             );
             interval(tokens.expires_in * 0.8 * 1000);

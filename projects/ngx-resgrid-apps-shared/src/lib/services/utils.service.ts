@@ -97,6 +97,15 @@ export class UtilsService {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
+    let hours = date.getHours();
+    if (format.indexOf('t') > -1) {
+      if (hours > 11) {
+        format = format.replace('t', 'pm');
+      } else {
+        format = format.replace('t', 'am');
+      }
+    }
+
     if (format.indexOf('MMMM') > -1) {
       format = format.replace('MMMM', this.monthNames[date.getMonth()]);
     } else if (format.indexOf('MMM') > -1) {
@@ -116,14 +125,6 @@ export class UtilsService {
       this.padLeadingZero(date.getDate()).toString()
     );
 
-    let hours = date.getHours();
-    if (format.indexOf('t') > -1) {
-      if (hours > 11) {
-        format = format.replace('t', 'pm');
-      } else {
-        format = format.replace('t', 'am');
-      }
-    }
     if (format.indexOf('HH') > -1) {
       format = format.replace('HH', this.padLeadingZero(hours).toString());
     }
@@ -252,7 +253,7 @@ export class UtilsService {
     return result;
   }
 
-  public getTimeAgo(time: any): string {
+  public getTimeAgo(time: any, floor: number = 0): string {
     if (!time) {
       return 'Unknown';
     }
@@ -292,6 +293,10 @@ export class UtilsService {
     let seconds = (+new Date() - time) / 1000,
       token = 'ago',
       listChoice = 1;
+
+    if (floor > 0 && seconds < floor) {
+      seconds = seconds + floor;
+    }
 
     if (seconds === 0) {
       return 'Just now';
@@ -392,20 +397,63 @@ export class UtilsService {
   }
 
   public generateUUID(): string {
-    var d = new Date().getTime();//Timestamp
+    var d = new Date().getTime(); //Timestamp
 
     // Time in microseconds since page-load or 0 if unsupported
-    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var d2 =
+      (typeof performance !== 'undefined' &&
+        performance.now &&
+        performance.now() * 1000) ||
+      0;
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      function (c) {
         var r = Math.random() * 16; //random number between 0 and 16
-        if(d > 0){ //Use timestamp until depleted
-            r = (d + r)%16 | 0;
-            d = Math.floor(d/16);
-        } else { //Use microseconds since page-load if supported
-            r = (d2 + r)%16 | 0;
-            d2 = Math.floor(d2/16);
+        if (d > 0) {
+          //Use timestamp until depleted
+          r = (d + r) % 16 | 0;
+          d = Math.floor(d / 16);
+        } else {
+          //Use microseconds since page-load if supported
+          r = (d2 + r) % 16 | 0;
+          d2 = Math.floor(d2 / 16);
         }
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-}
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      }
+    );
+  }
+
+  public invertColor(hex: string, bw: boolean): string {
+    if (hex.indexOf('#') === 0) {
+      hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+      throw new Error('Invalid HEX color.');
+    }
+    let r = parseInt(hex.slice(0, 2), 16),
+      g = parseInt(hex.slice(2, 4), 16),
+      b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+      // https://stackoverflow.com/a/3943023/112731
+      return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000000' : '#FFFFFF';
+    }
+    // invert color components
+    let r2 = (255 - r).toString(16),
+      g2 = (255 - g).toString(16),
+      b2 = (255 - b).toString(16);
+    // pad each with zeros and return
+    return (
+      '#' + this.padZero(r2, 2) + this.padZero(g2, 2) + this.padZero(b2, 2)
+    );
+  }
+
+  public padZero(str: string, len: number): string {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
+  }
 }

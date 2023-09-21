@@ -14,11 +14,15 @@
     "paths": {
       "ngx-resgridlib": [
         "dist/ngx-resgridlib"
+      ],
+      "ngx-resgridlib/*": [
+        "dist/ngx-resgridlib/*"
       ]
     },
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "suppressImplicitAnyIndexErrors": true,
     "target": "es2015",
     "module": "es2020",
     "lib": [

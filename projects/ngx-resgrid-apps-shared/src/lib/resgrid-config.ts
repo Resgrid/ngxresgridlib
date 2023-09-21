@@ -5,8 +5,10 @@ export interface ResgridASConfiguration {
   googleApiKey: string;
   channelUrl: string;
   channelHubName: string;
+  realtimeGeolocationHubName: string;
   logLevel: number;
   isMobileApp: boolean;
+  cacheProvider: any;
 }
 
 export class ResgridConfig implements ResgridASConfiguration {
@@ -14,10 +16,12 @@ export class ResgridConfig implements ResgridASConfiguration {
   public apiVersion: string = 'v4';
   public channelUrl: string = '';
   public channelHubName: string = '';
+  public realtimeGeolocationHubName: string = '';
   public clientId: string = '';
   public googleApiKey: string = '';
   public logLevel: number = 0;
   public isMobileApp: boolean = false;
+  public cacheProvider: any = null;
 
   get apiUrl(): string {
     return `${this.baseApiUrl()}/api/${this.apiVersion}`;
