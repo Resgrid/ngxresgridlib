@@ -23,6 +23,11 @@ export class VoiceService {
 
   public getDepartmentVoiceSettings(): Observable<DepartmentVoiceResult> {
     const url = this.config.apiUrl + '/Voice/GetDepartmentVoiceSettings';
+    return this.http.get<DepartmentVoiceResult>(url);
+
+    // This should no longer be cached as the token is dynamically generated and may need to be recreated before
+    // the cache expires. -SJ
+/*
     const temp = new DepartmentVoiceResult();
 
     return from(this.cacheService.getHttpResponse(temp.cacheKey)).pipe(
@@ -42,6 +47,7 @@ export class VoiceService {
         });
       })
     );
+    */
   }
 
   public connectToSession(sessionId: string): Observable<VoiceSessionConnectionResult> {
