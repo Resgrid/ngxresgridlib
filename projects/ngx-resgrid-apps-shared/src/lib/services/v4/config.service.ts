@@ -19,26 +19,30 @@ export class ConfigService {
     private loggerService: LoggerService
   ) {}
 
-  public getConfig(key: string): Observable<GetConfigResult> {
+  public getConfig(key: string, bypassCache: boolean = false): Observable<GetConfigResult> {
     const url = this.config.apiUrl + '/Config/GetConfig?key=' + key;
     const temp = new GetConfigResult();
 
-    return from(this.cacheService.getHttpResponse(temp.cacheKey)).pipe(
-      switchMap((cachedResponse) => {
-        if (cachedResponse) {
-          this.loggerService.logDebug(`Returning a cached response: ${temp.cacheKey} data: ${JSON.stringify(cachedResponse)}`);
-          return of(cachedResponse.body);
-        } else {
+    if (!bypassCache) {
+      return from(this.cacheService.getHttpResponse(temp.cacheKey)).pipe(
+        switchMap((cachedResponse) => {
+          if (cachedResponse) {
+            this.loggerService.logDebug(`Returning a cached response: ${temp.cacheKey} data: ${JSON.stringify(cachedResponse)}`);
+            return of(cachedResponse.body);
+          } else {
+            return this.http.get<GetConfigResult>(url, {
+              context:  this.cacheService.setCacheInfoHttpContext(temp),
+            });
+          }
+        }),
+        catchError((val) => {
           return this.http.get<GetConfigResult>(url, {
             context:  this.cacheService.setCacheInfoHttpContext(temp),
           });
-        }
-      }),
-      catchError((val) => {
-        return this.http.get<GetConfigResult>(url, {
-          context:  this.cacheService.setCacheInfoHttpContext(temp),
-        });
-      })
-    );
+        })
+      );
+    } else {
+      return this.http.get<GetConfigResult>(url);
+    }
   }
 }
