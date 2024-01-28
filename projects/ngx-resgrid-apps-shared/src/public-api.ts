@@ -216,3 +216,4 @@ export * from './lib/models/geo/Polyline';
 export * from './lib/models/geo/Distance/DistanceInterface';
 export * from './lib/models/geo/Distance/Haversine';
 export * from './lib/models/geo/Distance/Vincenty';
+export * from './lib/components/voice-footer/voice-footer.component';

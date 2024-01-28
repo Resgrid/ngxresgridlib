@@ -191,7 +191,7 @@ export class LazyGoogleMapsLoader {
 
   private _assignScriptLoadingPromise(scriptElem: HTMLElement) {
     this._scriptLoadingPromise = new Promise((resolve, reject) => {
-      window[this.callbackName] = () => {
+      (window as any)[this.callbackName] = () => {
         resolve(true);
       };
 

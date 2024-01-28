@@ -8,6 +8,8 @@ import { TruncatePipe } from './directives/truncate.directive';
 import { ResgridASConfiguration, ResgridConfig } from './resgrid-config';
 import { HttpInterceptorModule } from './interceptors/http.interceptor.module';
 import { WebCacheProvider } from './providers/webcache.provider';
+import { VoiceFooterComponent } from './components/voice-footer/voice-footer.component';
+import { FormsModule } from '@angular/forms';
 
 /**
  * @internal
@@ -20,12 +22,13 @@ export function directives() {
     RGTimeAgoPipe,
     RGTimeAgoUTCPipe,
     ConversationPipe,
+    VoiceFooterComponent
   ];
 }
 
 @NgModule({
   declarations: directives(),
-  imports: [HttpInterceptorModule],
+  imports: [HttpInterceptorModule, FormsModule],
   exports: directives(),
 })
 export class NgxResgridLibModule {

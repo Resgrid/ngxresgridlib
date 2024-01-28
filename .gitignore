@@ -45,3 +45,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /projects/ngx-resgrid-apps-shared/node_modules
+.angular
