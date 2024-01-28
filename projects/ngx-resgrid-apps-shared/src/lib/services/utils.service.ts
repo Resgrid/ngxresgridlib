@@ -306,10 +306,9 @@ export class UtilsService {
       token = 'from now';
       listChoice = 2;
     }
-    let i = 0,
-      format;
+    let i = 0, format;
     while ((format = timeFormats[i++])) {
-      if (seconds < format[0]) {
+      if (seconds < Number(format[0])) {
         if (typeof format[2] === 'string') {
           return format[listChoice].toString();
         } else {
@@ -383,7 +382,7 @@ export class UtilsService {
     let i = 0,
       format;
     while ((format = timeFormats[i++])) {
-      if (seconds < format[0]) {
+      if (seconds < Number(format[0])) {
         if (typeof format[2] === 'string') {
           return format[listChoice].toString();
         } else {
