@@ -8,6 +8,7 @@ import { VoiceSessionConnectionResult } from '../../models/v4/voice/voiceSession
 import { CacheService } from '../cache.service';
 import { LoggerService } from '../logger.service';
 import { DepartmentAudioResult } from '../../models/v4/voice/departmentAudioResult';
+import { CanConnectToVoiceSessionResult } from '../../models/v4/voice/canConnectToVoiceSessionResult';
 
 
 @Injectable({
@@ -24,30 +25,6 @@ export class VoiceService {
   public getDepartmentVoiceSettings(): Observable<DepartmentVoiceResult> {
     const url = this.config.apiUrl + '/Voice/GetDepartmentVoiceSettings';
     return this.http.get<DepartmentVoiceResult>(url);
-
-    // This should no longer be cached as the token is dynamically generated and may need to be recreated before
-    // the cache expires. -SJ
-/*
-    const temp = new DepartmentVoiceResult();
-
-    return from(this.cacheService.getHttpResponse(temp.cacheKey)).pipe(
-      switchMap((cachedResponse) => {
-        if (cachedResponse) {
-          this.loggerService.logDebug(`Returning a cached response: ${temp.cacheKey} data: ${JSON.stringify(cachedResponse)}`);
-          return of(cachedResponse.body);
-        } else {
-          return this.http.get<DepartmentVoiceResult>(url, {
-            context:  this.cacheService.setCacheInfoHttpContext(temp),
-          });
-        }
-      }),
-      catchError((val) => {
-        return this.http.get<DepartmentVoiceResult>(url, {
-          context:  this.cacheService.setCacheInfoHttpContext(temp),
-        });
-      })
-    );
-    */
   }
 
   public connectToSession(sessionId: string): Observable<VoiceSessionConnectionResult> {
@@ -58,5 +35,10 @@ export class VoiceService {
   public getDepartmentAudioStreams(): Observable<DepartmentAudioResult> {
     const url = this.config.apiUrl + '/Voice/GetDepartmentAudioStreams';
     return this.http.get<DepartmentAudioResult>(url);
+  }
+
+  public getCanConnectToVoiceSession(token: string): Observable<CanConnectToVoiceSessionResult> {
+    const url = this.config.apiUrl + '/Voice/CanConnectToVoiceSession?token=' + token;
+    return this.http.get<CanConnectToVoiceSessionResult>(url);
   }
 }

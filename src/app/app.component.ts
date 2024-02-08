@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { CallPrioritiesService, CallsService, RealtimeGeolocationService, SignalRService } from 'ngx-resgridlib';
-import { AuthService } from 'ngx-resgridlib';
+import { CallPrioritiesService, CallsService, RealtimeGeolocationService, SignalRService, LiveKitService, AuthService } from 'ngx-resgridlib';
 
 @Component({
   selector: 'resgrid-apps-shared-root',
@@ -12,7 +11,7 @@ export class AppComponent {
 
   constructor(private authService: AuthService, private callsService: CallsService, 
     private callPrioritiesService: CallPrioritiesService, private realtimeGeolocationService: RealtimeGeolocationService,
-    private signalRService: SignalRService) {
+    private signalRService: SignalRService, private liveKitService: LiveKitService) {
     
   }
 
@@ -34,5 +33,9 @@ export class AppComponent {
 
   public connectToGeolocationHub() {
     this.realtimeGeolocationService.start();
+  }
+
+  public initVoice() {
+
   }
 }

@@ -1,21 +1,24 @@
-<div class="voice-footer" *ngIf="(voiceState$ | async).isVoiceEnabled;">
-  <div class="container-fluid" style="height: 50px;">
-    <div class="row justify-content-center" style="height: 50px;">
-      <div class="col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;">
+<div class="voice-footer" *ngIf="isVisible;">
+  <div class="ngx-resgrid-container-fluid ngx-resgrid-justify-content-center" style="height: 50px;">
+    <div class="ngx-resgrid-row" style="height: 50px;">
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;">
         <div class="text-sm-left d-none d-sm-block">
-          <select class="form-control" [(ngModel)]="selectedChannel" (ngModelChange)="onChannelChange($event)">
-            <option *ngFor="let channel of availableChannels;" [ngValue]="channel">{{channel.Name}}</option>
+          <select class="ngx-resgrid-form-control" [(ngModel)]="selectedRoom" (ngModelChange)="onChannelChange($event)">
+            <option *ngFor="let room of rooms;" [ngValue]="room">{{room.name}}</option>
           </select>
         </div>
       </div>
-      <div class="col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;">
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;">
         <div class="text-sm-left d-none d-sm-block">
-          
+          <div id="participants-area" style="height: 1px; width: 1px; overflow: hidden;">
+          </div>
         </div>
       </div>
-      <div class="col-xs-1" style="height: 50px; padding: 4px; background: #252b3b;">
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;">
         <div class="text-sm-right d-none d-sm-block">
-          <button type="button" class="btn btn-primary" (click)="toggleTransmitting()" [disabled]="selectedChannel.Id === ''">
+          <button type="button" class="btn btn-primary" (click)="toggleTransmitting()" [disabled]="selectedRoom === null">
+            <svg-icon name="micOn" [stretch]="true" [svgStyle]="{'fill':'rgb(0,255,0)'}"></svg-icon>
+            <svg-icon name="micOff" [stretch]="true" [svgStyle]="{'fill':'rgb(255,0,0)'}"></svg-icon>
           </button>
         </div>
       </div>

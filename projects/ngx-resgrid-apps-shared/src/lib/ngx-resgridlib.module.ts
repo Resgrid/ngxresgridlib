@@ -10,6 +10,8 @@ import { HttpInterceptorModule } from './interceptors/http.interceptor.module';
 import { WebCacheProvider } from './providers/webcache.provider';
 import { VoiceFooterComponent } from './components/voice-footer/voice-footer.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AngularSvgIconModule } from "angular-svg-icon";
 
 /**
  * @internal
@@ -28,7 +30,7 @@ export function directives() {
 
 @NgModule({
   declarations: directives(),
-  imports: [HttpInterceptorModule, FormsModule],
+  imports: [HttpInterceptorModule, CommonModule, FormsModule, AngularSvgIconModule.forRoot()],
   exports: directives(),
 })
 export class NgxResgridLibModule {
