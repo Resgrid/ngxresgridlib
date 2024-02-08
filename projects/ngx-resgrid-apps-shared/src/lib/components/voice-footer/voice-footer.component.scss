@@ -9,3 +9,46 @@
     border: none;
     outline: none;
 }
+
+.ngx-resgrid-container-fluid {
+    width: 100%;
+    padding-right: 12px;
+    padding-left: 12px;
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ngx-resgrid-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -12px;
+    margin-left: -12px;
+}
+
+.ngx-resgrid-col-sm-2 {
+    flex: 0 0 16.6666666667%;
+    max-width: 16.6666666667%;
+}
+
+.ngx-resgrid-form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.94rem + 2px);
+    padding: 0.47rem 0.75rem;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #505d69;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.ngx-resgrid-justify-content-center {
+    justify-content: center !important;
+}

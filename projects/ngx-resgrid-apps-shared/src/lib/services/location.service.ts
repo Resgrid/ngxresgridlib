@@ -223,7 +223,7 @@ export class LazyGoogleMapsLoader {
         );
       })
       .map((k: string) => {
-        // join arrays as comma seperated strings
+        // join arrays as comma separated strings
         const i = queryParams[k];
         if (Array.isArray(i)) {
           return { key: k, value: i.join(',') };

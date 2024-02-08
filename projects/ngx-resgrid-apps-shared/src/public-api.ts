@@ -49,7 +49,7 @@ export * from './lib/services/cache.service';
 export * from './lib/services/custom-states.service';
 export * from './lib/services/document.service';
 export * from './lib/services/events.service';
-export * from './lib/services/kazoo-voice.service';
+export * from './lib/services/livekit.service';
 export * from './lib/services/location.service';
 export * from './lib/services/logger.service';
 export * from './lib/services/signalr.service';
