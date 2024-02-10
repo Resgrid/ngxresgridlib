@@ -34,7 +34,10 @@ import {
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { VoiceService } from './v4/voice.service';
-import { IRGPluginOptionRoom, IRGPluginOptions } from '../models/plugin/rgPluginOptions';
+import {
+  IRGPluginOptionRoom,
+  IRGPluginOptions,
+} from '../models/plugin/rgPluginOptions';
 import { ResgridConfig } from '../resgrid-config';
 import { CanConnectToVoiceSessionResult } from '../models/v4/voice/canConnectToVoiceSessionResult';
 
@@ -81,39 +84,37 @@ export class LiveKitService {
   ) {}
 
   init(): Observable<IRGPluginOptions> {
-    return this.voiceService
-      .getDepartmentVoiceSettings()
-      .pipe(
-        take(1),
-        map((data) => {
-          if (data && data.Data && data.Data.VoiceEnabled) {
-            let options: IRGPluginOptions = {
-              token: '',
-              url: data.Data.VoipServerWebsocketSslAddress,
-              type: 0,
-              defaultMic: '',
-              defaultSpeaker: '',
-              apiUrl: this.config.apiUrl + '/',
-              canConnectToVoiceApiToken: data.Data.CanConnectApiToken,
-              rooms: [],
-            };
+    return this.voiceService.getDepartmentVoiceSettings().pipe(
+      take(1),
+      map((data) => {
+        if (data && data.Data && data.Data.VoiceEnabled) {
+          let options: IRGPluginOptions = {
+            token: '',
+            url: data.Data.VoipServerWebsocketSslAddress,
+            type: 0,
+            defaultMic: '',
+            defaultSpeaker: '',
+            apiUrl: this.config.apiUrl + '/',
+            canConnectToVoiceApiToken: data.Data.CanConnectApiToken,
+            rooms: [],
+          };
 
-            if (data.Data.Channels && data.Data.Channels.length > 0) {
-              data.Data.Channels.forEach((channel) => {
-                options.rooms.push({
-                  name: channel.Name,
-                  id: channel.Id,
-                  token: channel.Token,
-                });
+          if (data.Data.Channels && data.Data.Channels.length > 0) {
+            data.Data.Channels.forEach((channel) => {
+              options.rooms.push({
+                name: channel.Name,
+                id: channel.Id,
+                token: channel.Token,
               });
-            }
-
-            this.departmentVoiceOptions = options;
+            });
           }
 
-          return this.departmentVoiceOptions;
-        })
-      );
+          this.departmentVoiceOptions = options;
+        }
+
+        return this.departmentVoiceOptions;
+      })
+    );
   }
 
   canConnectToVoice() {
@@ -185,7 +186,7 @@ export class LiveKitService {
     const startTime = Date.now();
     await this.room.prepareConnection(url, token);
     const prewarmTime = Date.now() - startTime;
-    -this.room
+    this.room
       .on(RoomEvent.ParticipantConnected, this.participantConnected)
       .on(RoomEvent.Disconnected, this.handleRoomDisconnect)
       .on(RoomEvent.DataReceived, this.handleData)
@@ -203,8 +204,11 @@ export class LiveKitService {
             );
             codecElm.setAttribute('value', calculateVolume().toFixed(4));
           }, 200);
+
+          this.renderParticipant(this.room!.localParticipant);
         }
-        this.renderParticipant(this.room!.localParticipant);
+        // When the track is a LocalVideoTrack the below errors out on the participant.getTrack call
+        //this.renderParticipant(this.room!.localParticipant);
         this.updateButtonsForPublishState();
         //this.renderScreenShare(this.room);
       })
@@ -280,10 +284,16 @@ export class LiveKitService {
     let currentRoom = this.room;
     this.setButtonsForState(true);
 
-    this.room.participants.forEach((participant) => {
-      this.participantConnected(participant);
-    });
+    if (this.room && this.room.participants) {
+      this.room.participants.forEach((participant) => {
+        this.participantConnected(participant);
+      });
+    }
     this.participantConnected(this.room.localParticipant);
+
+    this.room.localParticipant.setMicrophoneEnabled(false);
+    this.room.localParticipant.setCameraEnabled(false);
+
     return this.room;
   }
 
@@ -297,7 +307,6 @@ export class LiveKitService {
       div.id = `participant-${identity}`;
       div.className = 'participant';
       div.innerHTML = `
-      <video class="video-elm" id="video-${identity}"></video>
       <audio id="audio-${identity}"></audio>
       <div class="info-bar">
         <div id="name-${identity}" class="name">
@@ -323,21 +332,23 @@ export class LiveKitService {
       </div>`
           : `<progress id="local-volume" max="1" value="0"></progress>`
       }`;
+      //<video class="video-elm" id="video-${identity}"></video>
+
       container.appendChild(div);
       let sizeElm = <HTMLSpanElement>(
         document.getElementById('size-' + identity)
       );
-      let videoElm = <HTMLVideoElement>(
-        document.getElementById('video-' + identity)
-      );
+      //let videoElm = <HTMLVideoElement>(
+      //  document.getElementById('video-' + identity)
+      //);
 
-      videoElm.onresize = () => {
-        this.updateVideoSize(videoElm!, sizeElm!);
-      };
+      //videoElm.onresize = () => {
+      //  this.updateVideoSize(videoElm!, sizeElm!);
+      //};
     }
-    let videoElm = <HTMLVideoElement>(
-      document.getElementById('video-' + identity)
-    );
+    //let videoElm = <HTMLVideoElement>(
+    //  document.getElementById('video-' + identity)
+    //);
 
     let audioELm = <HTMLAudioElement>(
       document.getElementById('audio-' + identity)
@@ -346,10 +357,10 @@ export class LiveKitService {
     if (remove) {
       div.remove();
       container.style.display = 'none';
-      if (videoElm) {
-        videoElm.srcObject = null;
-        videoElm.src = '';
-      }
+      //if (videoElm) {
+      //  videoElm.srcObject = null;
+      //  videoElm.src = '';
+      //}
       if (audioELm) {
         audioELm.srcObject = null;
         audioELm.src = '';
@@ -368,7 +379,7 @@ export class LiveKitService {
     const signalElm = <HTMLElement>(
       document.getElementById('signal-' + identity)
     );
-    const cameraPub = participant.getTrack(Track.Source.Camera);
+    const cameraPub = undefined; //participant.getTrack(Track.Source.Camera);
     const micPub = participant.getTrack(Track.Source.Microphone);
     if (participant.isSpeaking) {
       div!.classList.add('speaking');
@@ -387,8 +398,8 @@ export class LiveKitService {
       });
     }
 
-    const cameraEnabled =
-      cameraPub && cameraPub.isSubscribed && !cameraPub.isMuted;
+    /*
+    const cameraEnabled = false;//cameraPub && cameraPub.isSubscribed && !cameraPub.isMuted;
     if (cameraEnabled) {
       if (participant instanceof LocalParticipant) {
         // flip
@@ -420,6 +431,7 @@ export class LiveKitService {
         videoElm.srcObject = null;
       }
     }
+    */
 
     const micEnabled = micPub && micPub.isSubscribed && !micPub.isMuted;
     if (micEnabled) {
@@ -475,10 +487,10 @@ export class LiveKitService {
         this.renderParticipant(participant);
       })
       .on(ParticipantEvent.IsSpeakingChanged, () => {
-        this.renderParticipant(participant);
+        //this.renderParticipant(participant);
       })
       .on(ParticipantEvent.ConnectionQualityChanged, () => {
-        this.renderParticipant(participant);
+        //this.renderParticipant(participant);
       });
   }
 
@@ -502,7 +514,7 @@ export class LiveKitService {
   }
 
   handleData(msg: Uint8Array, participant?: RemoteParticipant) {
-    console.log("handleData",msg);
+    console.log('handleData', msg);
     const str = this.state.decoder.decode(msg);
     const chat = <HTMLTextAreaElement>document.getElementById('chat');
     let from = 'server';
@@ -576,6 +588,24 @@ export class LiveKitService {
         element.setAttribute('disabled', 'true');
       }
     });
+  }
+
+  public async toggleAudio(mute: boolean): Promise<boolean> {
+    if (!this.room) return false;
+
+    await this.room.localParticipant.setMicrophoneEnabled(!mute);
+    return this.room.localParticipant.isMicrophoneEnabled;
+  }
+
+  public async toggleVideo(disableCamera: boolean): Promise<boolean> {
+    if (!this.room) return false;
+
+    await this.room.localParticipant.setCameraEnabled(!disableCamera);
+
+    // Donno why, leaving here for now
+    //this.renderParticipant(this.room.localParticipant);
+
+    return this.room.localParticipant.isCameraEnabled;
   }
 
   setButtonState(
