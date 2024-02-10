@@ -52,3 +52,64 @@
 .ngx-resgrid-justify-content-center {
     justify-content: center !important;
 }
+
+.ngx-resgrid-btn-primary.disabled, .ngx-resgrid-btn-primary:disabled {
+    color: #fff;
+    background-color: #5664d2;
+    border-color: #5664d2;
+}
+
+.ngx-resgrid-btn-primary.focus, .ngx-resgrid-btn-primary:focus, .ngx-resgrid-btn-primary:hover {
+    color: #fff;
+    background-color: #3848ca;
+    border-color: #3444c1;
+}
+
+.ngx-resgrid-btn:disabled {
+    opacity: .65;
+}
+
+.ngx-resgrid-btn:hover {
+    color: #505d69;
+    text-decoration: none;
+}
+
+.ngx-resgrid-btn-primary {
+    color: #fff;
+    background-color: #5664d2;
+    border-color: #5664d2;
+}
+
+.ngx-resgrid-btn {
+    display: inline-block;
+    font-weight: 400;
+    color: #505d69;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.47rem 0.75rem;
+    font-size: .9rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.ngx-resgrid-text-right {
+    text-align: right!important;
+}
+
+.ngx-resgrid-text-sm-left {
+    text-align: left!important;
+}
+
+.ngx-resgrid-d-none {
+    display: none!important;
+}
+
+.ngx-resgrid-d-block {
+    display: block!important;
+}
