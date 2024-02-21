@@ -44,16 +44,16 @@
     "@microsoft/signalr": "^5.0.0 || ^6.0.0 || ^7.0.0",
     "angular-svg-icon": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0",
     "jwt-decode": "^3.1.2",
-    "livekit-client": "^1.15.9",
+    "livekit-client": "^2.0.2",
     "lodash": "^4.17.21",
     "rxjs": "^6.5.3 || ^7.4.0"
   },
   "dependencies": {
     "@microsoft/signalr": "^5.0.0 || ^6.0.0 || ^7.0.0",
-    "angular-svg-icon": "^17.0.0",
+    "angular-svg-icon": "^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0",
     "jwt-decode": "^3.1.2",
     "leaflet": "^1.7.1",
-    "livekit-client": "^1.15.9",
+    "livekit-client": "^2.0.2",
     "lodash": "^4.17.21",
     "tslib": "^2.0.0"
   },
