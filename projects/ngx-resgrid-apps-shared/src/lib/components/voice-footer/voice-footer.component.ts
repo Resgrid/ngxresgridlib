@@ -82,7 +82,7 @@ export class VoiceFooterComponent implements OnInit {
 
   public async onChannelChange(room: IRGPluginOptionRoom) {
     if (room.id === '') {
-     
+      await this.livekitService.disconnect();
     } else {
       await this.livekitService.connect(room);
     }

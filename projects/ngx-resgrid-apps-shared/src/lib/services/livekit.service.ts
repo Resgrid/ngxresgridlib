@@ -132,9 +132,9 @@ export class LiveKitService {
 
   public async connect(room: IRGPluginOptionRoom) {
     const simulcast = false;
-    const dynacast = false;
+    const dynacast = true;  // optimize publishing bandwidth and CPU for published tracks
     const forceTURN = false;
-    const adaptiveStream = false;
+    const adaptiveStream = true; // automatically manage subscribed video quality
     const shouldPublish = true;
     const autoSubscribe = true;
 
@@ -186,11 +186,12 @@ export class LiveKitService {
     const startTime = Date.now();
     await this.room.prepareConnection(url, token);
     const prewarmTime = Date.now() - startTime;
+    const that = this;
     this.room
-      .on(RoomEvent.ParticipantConnected, this.participantConnected)
-      .on(RoomEvent.Disconnected, this.handleRoomDisconnect)
-      .on(RoomEvent.DataReceived, this.handleData)
-      .on(RoomEvent.ParticipantDisconnected, this.participantDisconnected)
+      .on(RoomEvent.ParticipantConnected, (participant: RemoteParticipant) => { that.participantConnected(that, participant);})
+      .on(RoomEvent.Disconnected, that.handleRoomDisconnect)
+      .on(RoomEvent.DataReceived, that.handleData)
+      .on(RoomEvent.ParticipantDisconnected, (participant: RemoteParticipant) => { that.renderParticipant(participant, true);})
       .on(RoomEvent.Reconnected, async () => {})
       .on(RoomEvent.LocalTrackPublished, (pub) => {
         const track = pub.track as LocalAudioTrack;
@@ -204,11 +205,9 @@ export class LiveKitService {
             );
             codecElm.setAttribute('value', calculateVolume().toFixed(4));
           }, 200);
-
-          this.renderParticipant(this.room!.localParticipant);
         }
         // When the track is a LocalVideoTrack the below errors out on the participant.getTrack call
-        //this.renderParticipant(this.room!.localParticipant);
+        this.renderParticipant(this.room!.localParticipant);
         this.updateButtonsForPublishState();
         //this.renderScreenShare(this.room);
       })
@@ -221,15 +220,15 @@ export class LiveKitService {
       .on(RoomEvent.MediaDevicesChanged, this.handleDevicesChanged)
       .on(RoomEvent.AudioPlaybackStatusChanged, () => {
         if (this.room!.canPlaybackAudio) {
-          const element = <HTMLButtonElement>(
-            document.getElementById('start-audio-button')
-          );
-          element.setAttribute('disabled', 'true');
+          //const element = <HTMLButtonElement>(
+          //  document.getElementById('start-audio-button')
+          //);
+          //element.setAttribute('disabled', 'true');
         } else {
-          const element = <HTMLButtonElement>(
-            document.getElementById('start-audio-button')
-          );
-          element.setAttribute('disabled', 'true');
+          //const element = <HTMLButtonElement>(
+          //  document.getElementById('start-audio-button')
+          //);
+          //element.setAttribute('disabled', 'true');
         }
       })
       .on(RoomEvent.MediaDevicesError, (e: Error) => {
@@ -252,8 +251,9 @@ export class LiveKitService {
         // speed up publishing by starting to publish before it's fully connected
         // publishing is accepted as soon as signal connection has established
         if (shouldPublish) {
-          await this.room!.localParticipant.enableCameraAndMicrophone();
-          this.updateButtonsForPublishState();
+          //await this.room!.localParticipant.enableCameraAndMicrophone();
+          //await this.room!.localParticipant.setMicrophoneEnabled(true);
+          //this.updateButtonsForPublishState();
         }
       })
       .on(RoomEvent.ParticipantEncryptionStatusChanged, () => {
@@ -284,15 +284,15 @@ export class LiveKitService {
     let currentRoom = this.room;
     this.setButtonsForState(true);
 
-    if (this.room && this.room.participants) {
-      this.room.participants.forEach((participant) => {
-        this.participantConnected(participant);
+    if (this.room && this.room.remoteParticipants) {
+      this.room.remoteParticipants.forEach((participant) => {
+        this.participantConnected(this, participant);
       });
     }
-    this.participantConnected(this.room.localParticipant);
+    this.participantConnected(this, this.room.localParticipant);
 
-    this.room.localParticipant.setMicrophoneEnabled(false);
-    this.room.localParticipant.setCameraEnabled(false);
+    //await this.room.localParticipant.setMicrophoneEnabled(false);
+    await this.room.localParticipant.setCameraEnabled(false);
 
     return this.room;
   }
@@ -307,6 +307,7 @@ export class LiveKitService {
       div.id = `participant-${identity}`;
       div.className = 'participant';
       div.innerHTML = `
+      <video id="video-${identity}"></video>
       <audio id="audio-${identity}"></audio>
       <div class="info-bar">
         <div id="name-${identity}" class="name">
@@ -346,9 +347,9 @@ export class LiveKitService {
       //  this.updateVideoSize(videoElm!, sizeElm!);
       //};
     }
-    //let videoElm = <HTMLVideoElement>(
-    //  document.getElementById('video-' + identity)
-    //);
+    let videoElm = <HTMLVideoElement>(
+      document.getElementById('video-' + identity)
+    );
 
     let audioELm = <HTMLAudioElement>(
       document.getElementById('audio-' + identity)
@@ -357,10 +358,10 @@ export class LiveKitService {
     if (remove) {
       div.remove();
       container.style.display = 'none';
-      //if (videoElm) {
-      //  videoElm.srcObject = null;
-      //  videoElm.src = '';
-      //}
+      if (videoElm) {
+        videoElm.srcObject = null;
+        videoElm.src = '';
+      }
       if (audioELm) {
         audioELm.srcObject = null;
         audioELm.src = '';
@@ -379,26 +380,31 @@ export class LiveKitService {
     const signalElm = <HTMLElement>(
       document.getElementById('signal-' + identity)
     );
-    const cameraPub = undefined; //participant.getTrack(Track.Source.Camera);
-    const micPub = participant.getTrack(Track.Source.Microphone);
-    if (participant.isSpeaking) {
-      div!.classList.add('speaking');
-    } else {
-      div!.classList.remove('speaking');
-    }
 
-    if (participant instanceof RemoteParticipant) {
-      const volumeSlider = <HTMLInputElement>(
-        document.getElementById('volume-' + identity)
-      );
-      volumeSlider.addEventListener('input', (ev) => {
-        participant.setVolume(
-          Number.parseFloat((ev.target as HTMLInputElement).value)
-        );
-      });
-    }
+    //try {
+      const cameraPub = undefined;//participant.getTrackPublication(Track.Source.Camera);
+      const micPub = participant.getTrackPublication(Track.Source.Microphone);
 
-    /*
+      if (participant.isSpeaking) {
+        div!.classList.add('speaking');
+      } else {
+        div!.classList.remove('speaking');
+      }
+
+      if (participant instanceof RemoteParticipant) {
+        //const volumeSlider = <HTMLInputElement>(
+        //  document.getElementById('volume-' + identity)
+        //);
+        //volumeSlider.addEventListener('input', (ev) => {
+        //  participant.setVolume(
+        //    Number.parseFloat((ev.target as HTMLInputElement).value)
+        //  );
+        //});
+
+        participant.setVolume(1);
+      }
+
+      /*
     const cameraEnabled = false;//cameraPub && cameraPub.isSubscribed && !cameraPub.isMuted;
     if (cameraEnabled) {
       if (participant instanceof LocalParticipant) {
@@ -433,64 +439,66 @@ export class LiveKitService {
     }
     */
 
-    const micEnabled = micPub && micPub.isSubscribed && !micPub.isMuted;
-    if (micEnabled) {
-      if (!(participant instanceof LocalParticipant)) {
-        // don't attach local audio
-        audioELm.onloadeddata = () => {
-          if (
-            participant.joinedAt &&
-            participant.joinedAt.getTime() < this.startTime!
-          ) {
-            const fromJoin = Date.now() - this.startTime!;
-          }
-        };
-        micPub?.audioTrack?.attach(audioELm);
+      const micEnabled = micPub && micPub.isSubscribed && !micPub.isMuted;
+      if (micEnabled) {
+        if (!(participant instanceof LocalParticipant)) {
+          // don't attach local audio
+          audioELm.onloadeddata = () => {
+            if (
+              participant.joinedAt &&
+              participant.joinedAt.getTime() < this.startTime!
+            ) {
+              const fromJoin = Date.now() - this.startTime!;
+            }
+          };
+          micPub?.audioTrack?.attach(audioELm);
+        }
+        //micElm.className = 'mic-on';
+        //micElm.innerHTML = '<i class="fas fa-microphone"></i>';
+      } else {
+        //micElm.className = 'mic-off';
+        //micElm.innerHTML = '<i class="fas fa-microphone-slash"></i>';
       }
-      micElm.className = 'mic-on';
-      micElm.innerHTML = '<i class="fas fa-microphone"></i>';
-    } else {
-      micElm.className = 'mic-off';
-      micElm.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-    }
+    //} catch (error) {}
 
-    let e2eeElm = <HTMLElement>document.getElementById('e2ee-' + identity);
+    //let e2eeElm = <HTMLElement>document.getElementById('e2ee-' + identity);
 
-    if (participant.isEncrypted) {
-      e2eeElm.className = 'e2ee-on';
-      e2eeElm.innerHTML = '<i class="fas fa-lock"></i>';
-    } else {
-      e2eeElm.className = 'e2ee-off';
-      e2eeElm.innerHTML = '<i class="fas fa-unlock"></i>';
-    }
+    //if (participant.isEncrypted) {
+    //  e2eeElm.className = 'e2ee-on';
+    //  e2eeElm.innerHTML = '<i class="fas fa-lock"></i>';
+    //} else {
+    //  e2eeElm.className = 'e2ee-off';
+    //  e2eeElm.innerHTML = '<i class="fas fa-unlock"></i>';
+    //}
 
-    switch (participant.connectionQuality) {
-      case ConnectionQuality.Excellent:
-      case ConnectionQuality.Good:
-      case ConnectionQuality.Poor:
-        signalElm.className = `connection-${participant.connectionQuality}`;
-        signalElm.innerHTML = '<i class="fas fa-circle"></i>';
-        break;
-      default:
-        signalElm.innerHTML = '';
-      // do nothing
-    }
+    //switch (participant.connectionQuality) {
+    //  case ConnectionQuality.Excellent:
+    //  case ConnectionQuality.Good:
+    //  case ConnectionQuality.Poor:
+    //    signalElm.className = `connection-${participant.connectionQuality}`;
+    //    signalElm.innerHTML = '<i class="fas fa-circle"></i>';
+    //    break;
+    //  default:
+    //    signalElm.innerHTML = '';
+    //  // do nothing
+    //}
   }
 
-  participantConnected(participant: Participant) {
-    console.log('tracks', participant.tracks);
+  participantConnected(that: any, participant: Participant) {
+    console.log('tracks', participant.trackPublications);
+
     participant
       .on(ParticipantEvent.TrackMuted, (pub: TrackPublication) => {
-        this.renderParticipant(participant);
+        that.renderParticipant(participant);
       })
       .on(ParticipantEvent.TrackUnmuted, (pub: TrackPublication) => {
-        this.renderParticipant(participant);
+        that.renderParticipant(participant);
       })
       .on(ParticipantEvent.IsSpeakingChanged, () => {
-        //this.renderParticipant(participant);
+        that.renderParticipant(participant);
       })
       .on(ParticipantEvent.ConnectionQualityChanged, () => {
-        //this.renderParticipant(participant);
+        that.renderParticipant(participant);
       });
   }
 
@@ -498,7 +506,7 @@ export class LiveKitService {
     if (!this.room) return;
     this.setButtonsForState(false);
     this.renderParticipant(this.room.localParticipant, true);
-    this.room.participants.forEach((p) => {
+    this.room.remoteParticipants.forEach((p) => {
       this.renderParticipant(p, true);
     });
     //this.renderScreenShare(this.room);
@@ -606,6 +614,15 @@ export class LiveKitService {
     //this.renderParticipant(this.room.localParticipant);
 
     return this.room.localParticipant.isCameraEnabled;
+  }
+
+  public async disconnect() {
+    if (this.room) {
+      await this.room.disconnect();
+    }
+    if (this.state.bitrateInterval) {
+      clearInterval(this.state.bitrateInterval);
+    }
   }
 
   setButtonState(
