@@ -1,0 +1,26 @@
+<div class="voice-footer" *ngIf="isVisible;">
+  <div class="ngx-resgrid-container-fluid ngx-resgrid-justify-content-center" style="height: 50px;">
+    <div class="ngx-resgrid-row" style="height: 50px;">
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;min-width: 175px;">
+        <div class="ngx-resgrid-text-sm-left ngx-resgrid-d-block">
+          <select class="ngx-resgrid-form-control" [(ngModel)]="selectedRoom" (ngModelChange)="onChannelChange($event)">
+            <option *ngFor="let room of rooms;" [ngValue]="room">{{room.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;min-width: 10px;max-width: 10px;">
+        <div class="ngx-resgrid-text-sm-left ngx-resgrid-d-block">
+          <div id="participants-area" style="height: 1px; width: 1px; overflow: hidden;">
+          </div>
+        </div>
+      </div>
+      <div class="ngx-resgrid-col-sm-2" style="height: 50px; padding: 4px; background: #252b3b;min-width: 50px;">
+        <div class="ngx-resgrid-text-right ngx-resgrid-d-block">
+          <button type="button" class="ngx-resgrid-btn ngx-resgrid-btn-primary" (click)="toggleTransmitting()" [disabled]="selectedRoom === null || selectedRoom.id === ''">
+            <svg-icon name="micOn" [stretch]="true" [svgStyle]="{'width.px':20}" *ngIf="isTransmitting"></svg-icon>
+            <svg-icon name="micOff" [stretch]="true" [svgStyle]="{'width.px':20}" *ngIf="!isTransmitting"></svg-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
