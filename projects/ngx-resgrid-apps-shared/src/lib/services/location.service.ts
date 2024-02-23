@@ -191,7 +191,7 @@ export class LazyGoogleMapsLoader {
 
   private _assignScriptLoadingPromise(scriptElem: HTMLElement) {
     this._scriptLoadingPromise = new Promise((resolve, reject) => {
-      window[this.callbackName] = () => {
+      (window as any)[this.callbackName] = () => {
         resolve(true);
       };
 
@@ -223,7 +223,7 @@ export class LazyGoogleMapsLoader {
         );
       })
       .map((k: string) => {
-        // join arrays as comma seperated strings
+        // join arrays as comma separated strings
         const i = queryParams[k];
         if (Array.isArray(i)) {
           return { key: k, value: i.join(',') };

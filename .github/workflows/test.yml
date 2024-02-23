@@ -14,12 +14,12 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v1
         with:
-          node-version: "16.10"
+          node-version: "18.13"
       - run: npm install -g @angular/cli
       - run: npm ci
       - run: npm ci
         working-directory: ./projects/ngx-resgrid-apps-shared
-      - run: npm build --if-present
+      - run: npm run build --if-present
         working-directory: ./projects/ngx-resgrid-apps-shared
       - run: npm run testci
         working-directory: ./projects/ngx-resgrid-apps-shared
