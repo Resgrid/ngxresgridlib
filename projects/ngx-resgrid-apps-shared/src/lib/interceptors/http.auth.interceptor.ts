@@ -7,7 +7,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError, timer } from 'rxjs';
+import { BehaviorSubject, Observable, from, of, throwError, timer } from 'rxjs';
 import { AuthService } from '../services/v4/auth.service';
 import { ResgridConfig } from '../resgrid-config';
 import {
@@ -24,14 +24,9 @@ import { LoggerService } from '../services/logger.service';
 export const retryCount = 3;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpsRequestInterceptor implements HttpInterceptor {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null
-  );
-
   constructor(
     private authService: AuthService,
     private config: ResgridConfig,
@@ -43,61 +38,43 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (this.shouldAddTokenToRequest(req.url)) {
-      const dupReq = this.addAuthHeader(req);
+      return from(this.addAuthHeader(req)).pipe(
+        switchMap((dupReq: any) => {
+          return next.handle(dupReq).pipe(
+            catchError((error) => {
+              if (error instanceof HttpErrorResponse && error.status === 401) {
+                return this.handle401Error(req, next);
+              }
 
-      return next.handle(dupReq).pipe(
-        catchError((error) => {
-          if (error instanceof HttpErrorResponse && error.status === 401) {
-            return this.handle401Error(req, next);
-          }
-
-          return throwError(error);
+              return throwError(() => error);
+            })
+          );
         })
       );
     }
     return next.handle(req);
   }
 
-  private handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      return this.authService.refreshTokens().pipe(
-        switchMap((token: any) => {
-          this.isRefreshing = false;
-
-          const dupReq = this.addAuthHeader(req);
-          const tokens = this.authService.retrieveTokens();
-
-          if (tokens) {
-            this.refreshTokenSubject.next(tokens.access_token);
-          }// else {
-           // this.logger.logError('No tokens found after refresh');
-           // this.authService.logout();
-           // return throwError('');
-          //}
-
-          return next.handle(dupReq);
-        }),
-        catchError((err) => {
-          this.isRefreshing = false;
-
-          this.authService.logout();
-          return throwError(err);
-        })
-      );
-    }
-
-    return this.refreshTokenSubject.pipe(
-      filter(token => token !== null),
-      take(1),
-      switchMap((token) => next.handle(this.addAuthHeader(req)))
+  private handle401Error(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    return this.authService.refreshTokens().pipe(
+      switchMap((response) => this.addAuthHeader(req)),
+      switchMap((dupReq: any) => {
+        return next.handle(dupReq);
+      }),
+      catchError((err) => {
+        this.authService.logout();
+        return throwError(() => err);
+      })
     );
   }
 
-  private addAuthHeader(request: HttpRequest<any>): HttpRequest<any> {
-    const tokens = this.authService.retrieveTokens();
+  private async addAuthHeader(
+    request: HttpRequest<any>
+  ): Promise<HttpRequest<any>> {
+    const tokens = await this.authService.retrieveTokens();
     if (tokens) {
       const dupReq = request.clone({
         headers: request.headers.set(
@@ -110,51 +87,6 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
     }
 
     return request;
-  }
-
-  private handleResponseError(
-    error: HttpErrorResponse,
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    if (error.status === 400) {
-      // Show message
-    }
-
-    // Unauthorized
-    else if (error.status === 401) {
-      this.logger.logDebug(
-        `In handleResponseError got 401 response: ${request.url}`
-      );
-
-      return timer(10000).pipe(
-        switchMap(() => {
-          const dupReq = this.addAuthHeader(request);
-
-          return next.handle(dupReq); //.pipe(delay(1500));
-        })
-      );
-    }
-
-    // Access denied error
-    else if (error.status === 403) {
-      // Show message
-      // Logout
-      //this.logout();
-    }
-
-    // Server error
-    else if (error.status === 500) {
-      // Show message
-    }
-
-    // Maintenance error
-    else if (error.status === 503) {
-      // Show message
-      // Redirect to the maintenance page
-    }
-
-    return throwError(error);
   }
 
   private shouldAddTokenToRequest(requestUrl: string): boolean {

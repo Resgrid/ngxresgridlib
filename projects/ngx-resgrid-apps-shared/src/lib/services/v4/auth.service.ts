@@ -2,20 +2,14 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  from,
   interval,
   Observable,
   of,
   Subscription,
   throwError,
 } from 'rxjs';
-import {
-  catchError,
-  filter,
-  map,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthStateModel } from '../../models/v4/auth/authState';
 import { AuthTokenModel } from '../../models/v4/auth/authTokens';
 import { LoginModel } from '../../models/v4/auth/login';
@@ -28,11 +22,11 @@ import { StorageService } from '../storage.service';
 import { LoggerService } from '../logger.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+  public isRefreshing = false;
+  public refreshTokenSubject: BehaviorSubject<ProfileModel | null> = new BehaviorSubject<ProfileModel | null>(
     null
   );
 
@@ -61,14 +55,14 @@ export class AuthService {
 
     this.tokens$ = this.state.pipe(
       filter(
-        (state) => state.authReady != undefined && state.authReady != false
+        (state) => state.authReady != undefined && state.authReady != null && state.authReady != false
       ),
       map((state) => state.tokens)
     );
 
     this.profile$ = this.state.pipe(
       filter(
-        (state) => state.authReady != undefined && state.authReady != false
+        (state) => state.authReady != undefined && state.authReady != null && state.authReady != false
       ),
       map((state) => state.profile)
     );
@@ -95,53 +89,56 @@ export class AuthService {
   public refreshTokens(): Observable<ProfileModel | null> {
     this.logger.logDebug('Starting refresh token flow');
 
-    const storedTokens = this.retrieveTokens();
+    return from(this.retrieveTokens()).pipe(
+      switchMap((storedTokens) => {
+        if (
+          storedTokens &&
+          storedTokens.refresh_token &&
+          storedTokens.refresh_token.length > 0
+        ) {
+          if (!this.isRefreshing) {
+            this.isRefreshing = true;
 
-    if (
-      storedTokens &&
-      storedTokens.refresh_token &&
-      storedTokens.refresh_token.length > 0
-    ) {
-      if (!this.isRefreshing) {
-        this.isRefreshing = true;
+            this.logger.logDebug('Retrieved stored tokens');
 
-        this.logger.logDebug('Retrieved stored tokens');
-
-        return this.getTokens(
-          {
-            username: '',
-            password: '',
-            refresh_token: storedTokens.refresh_token,
-          },
-          'refresh_token'
-        );
-      } else {
-        return this.refreshTokenSubject.pipe(
-          filter(profile => profile !== null),
-          take(1),
-          switchMap((profile) => of(profile))
-        );
-      }
-    }
-
-    this.logger.logDebug('No stored tokens retrieved');
-    return of(null);
+            return this.getTokens(
+              {
+                username: '',
+                password: '',
+                refresh_token: storedTokens.refresh_token,
+              },
+              'refresh_token'
+            );
+          } else {
+            return this.refreshTokenSubject.pipe(
+              filter((profile) => profile !== null),
+              take(1),
+              switchMap((profile) => of(profile))
+            );
+          }
+        }
+        this.logger.logDebug('No stored tokens retrieved');
+        return of(null);
+      })
+    );
   }
 
-  private storeToken(tokens: AuthTokenModel): void {
-    const previousTokens = this.retrieveTokens();
+  private async storeToken(tokens: AuthTokenModel): Promise<void> {
+    this.logger.logDebug('storing tokens');
+
+    const previousTokens = await this.retrieveTokens();
     if (previousTokens != null && tokens.refresh_token == null) {
       tokens.refresh_token = previousTokens.refresh_token;
     }
 
-    this.storageService.write('auth-tokens', tokens);
+    this.storageService.write('auth-tokens', JSON.stringify(tokens));
   }
 
-  public retrieveTokens(): AuthTokenModel | null {
-    var tokens = this.storageService.read('auth-tokens');
+  public async retrieveTokens(): Promise<AuthTokenModel | null> {
+    var tokens = await this.storageService.read('auth-tokens');
 
     if (tokens) {
-      return tokens as AuthTokenModel;
+      return JSON.parse(tokens) as AuthTokenModel;
     }
     return null;
   }
@@ -194,9 +191,7 @@ export class AuthService {
             .getTime()
             .toString();
 
-          this.logger.logDebug(
-            `got token expiration: ${res.expiration_date}`
-          );
+          this.logger.logDebug(`got token expiration: ${res.expiration_date}`);
 
           const profile: ProfileModel = jwt_decode(res.id_token);
 
@@ -219,7 +214,7 @@ export class AuthService {
   }
 
   private startupTokenRefresh(): Observable<AuthTokenModel> {
-    return of(this.retrieveTokens()).pipe(
+    return from(this.retrieveTokens()).pipe(
       map((tokens: AuthTokenModel | null) => {
         if (!tokens) {
           this.updateState({ authReady: true });

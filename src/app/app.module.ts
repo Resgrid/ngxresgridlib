@@ -25,7 +25,8 @@ let getBaseUrl = (): string => {
       realtimeGeolocationHubName: '/geolocationHub',
       logLevel: 0, 
       isMobileApp: false,
-      cacheProvider: null
+      cacheProvider: null,
+      storageProvider: null,
     }),
   ],
   providers: [],
