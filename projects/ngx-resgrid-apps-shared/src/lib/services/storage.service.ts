@@ -1,14 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ResgridConfig } from '../resgrid-config';
 import { LoggerService } from './logger.service';
+import { IStorageProvider } from '../models/storageProvider';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  constructor(private logger: LoggerService, private config: ResgridConfig) {}
+  constructor(@Inject('RG_STORAGE_PROVIDER') private storageProvider: IStorageProvider, private logger: LoggerService, private config: ResgridConfig) {}
 
-  read(key: string): any {
+  async read(key: string): Promise<string | null> {
+    if (this.storageProvider) {
+      return await this.storageProvider.read(key);
+    } 
+
     const combinedKey = `${this.config.clientId}.${key}`;
     const storedValue = localStorage.getItem(combinedKey);
 
@@ -17,7 +22,7 @@ export class StorageService {
         `readKey ${combinedKey} length: ${storedValue.length}`
       );
 
-      return JSON.parse(storedValue);
+      return storedValue;
     }
 
     this.logger.logDebug(
@@ -27,24 +32,27 @@ export class StorageService {
     return null;
   }
 
-  write(key: string, value: any): boolean {
-    localStorage.setItem(
-      `${this.config.clientId}.${key}`,
-      JSON.stringify(value)
-    );
+  async write(key: string, value: string): Promise<void> {
+    if (this.storageProvider) {
+      return await this.storageProvider.write(key, value);
+    }
 
-    return true;
+    localStorage.setItem(`${this.config.clientId}.${key}`, value);
   }
 
-  remove(key: string): boolean {
+  async remove(key: string): Promise<void> {
+    if (this.storageProvider) {
+      return await this.storageProvider.remove(key);
+    }
+
     localStorage.removeItem(`${this.config.clientId}.${key}`);
-
-    return true;
   }
 
-  clear(): boolean {
-    localStorage.clear();
+  async clear(): Promise<void> {
+    if (this.storageProvider) {
+      return await this.storageProvider.clear();
+    }
 
-    return true;
+    localStorage.clear();
   }
 }

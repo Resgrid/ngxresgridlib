@@ -9,6 +9,7 @@ export interface ResgridASConfiguration {
   logLevel: number;
   isMobileApp: boolean;
   cacheProvider: any;
+  storageProvider: any;
 }
 
 export class ResgridConfig implements ResgridASConfiguration {
@@ -22,6 +23,7 @@ export class ResgridConfig implements ResgridASConfiguration {
   public logLevel: number = 0;
   public isMobileApp: boolean = false;
   public cacheProvider: any = null;
+  public storageProvider: any = null;
 
   get apiUrl(): string {
     return `${this.baseApiUrl()}/api/${this.apiVersion}`;

@@ -41,14 +41,14 @@ export class RealtimeGeolocationService {
     //this.connectionStateObserver.next(ConnectionState.Connecting);
   }
 
-  public start(): void {
+  public async start(): Promise<void> {
     console.log('SignalR Channel Start()');
     this.retryCount = 0;
 
     if (!this.started) {
       try {
         this.connectionStateObserver?.next(ConnectionState.Connecting);
-        const tokens = this.authService.retrieveTokens();
+        const tokens = await this.authService.retrieveTokens();
 
         if (tokens) {
         this.hubConnection = new signalR.HubConnectionBuilder()

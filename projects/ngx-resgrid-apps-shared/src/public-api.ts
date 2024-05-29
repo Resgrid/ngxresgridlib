@@ -63,6 +63,7 @@ export * from './lib/models/v4/baseV4Request';
 export * from './lib/models/gpsLocation';
 export * from './lib/models/cacheable';
 export * from './lib/models/cacheProvider';
+export * from './lib/models/storageProvider';
 export * from './lib/models/v4/auth/authState';
 export * from './lib/models/v4/auth/authTokens';
 export * from './lib/models/v4/auth/login';

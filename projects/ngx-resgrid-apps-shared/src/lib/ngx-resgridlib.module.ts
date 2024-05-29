@@ -66,6 +66,10 @@ export class NgxResgridLibModule {
           provide: 'RG_CACHE_PROVIDER', 
           useValue: configuration.cacheProvider 
         },
+        { 
+          provide: 'RG_STORAGE_PROVIDER', 
+          useValue: configuration.storageProvider 
+        },
       ],
     };
   }
