@@ -453,6 +453,78 @@ export class UtilsService {
     );
   }
 
+  public blendColor(hexColor: string, magnitude: number): string
+  {
+    hexColor = hexColor.replace(`#`, ``);
+    if (hexColor.length === 6) {
+        const decimalColor = parseInt(hexColor, 16);
+        let r = (decimalColor >> 16) + magnitude;
+        r > 255 && (r = 255);
+        r < 0 && (r = 0);
+        let g = (decimalColor & 0x0000ff) + magnitude;
+        g > 255 && (g = 255);
+        g < 0 && (g = 0);
+        let b = ((decimalColor >> 8) & 0x00ff) + magnitude;
+        b > 255 && (b = 255);
+        b < 0 && (b = 0);
+        return `#${(g | (b << 8) | (r << 16)).toString(16)}`;
+    } else {
+        return hexColor;
+    }
+  }
+
+  public isColorDark(color: string): boolean {
+    let r: number = 0;
+    let g: number = 0;
+    let b: number = 0;
+
+    // Check the format of the color, HEX or RGB?
+    if (color.match(/^rgb/)) {
+  
+      // If HEX --> store the red, green, blue values in separate variables
+      let colorHex = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+  
+      if (colorHex)
+      {
+        r = parseInt(colorHex[1]);
+        g = parseInt(colorHex[2]);
+        b = parseInt(colorHex[3]);
+      }
+    } 
+    else {
+      // If RGB --> Convert it to HEX: http://gist.github.com/983661
+      //let colorRGB = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+  
+      //r = colorRGB >> 16;
+      //g = colorRGB >> 8 & 255;
+      //b = colorRGB & 255;
+
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+
+      if (result)
+      {
+        r = parseInt(result[1], 16);
+        g = parseInt(result[2], 16);
+        b = parseInt(result[3], 16);
+      }
+    }
+  
+    // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+    let hsp = Math.sqrt(
+      0.299 * (r * r) +
+      0.587 * (g * g) +
+      0.114 * (b * b)
+    );
+  
+    // Using the HSP value, determine whether the color is light or dark
+    if (hsp>127.5) {
+      return false;
+    } 
+    else {
+      return true;
+    }
+  }
+
   public padZero(str: string, len: number): string {
     len = len || 2;
     var zeros = new Array(len).join('0');
