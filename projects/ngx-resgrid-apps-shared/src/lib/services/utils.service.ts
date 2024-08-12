@@ -371,7 +371,8 @@ export class UtilsService {
       token = 'ago',
       listChoice = 1;
 
-    // If it's within a minute of the current date lets just say "Just now" as it messes up Angular checking for changes
+    // If it's within a minute of the current date lets just say "Just now" as it messes up 
+    // Angular checking for changes and throws an error.
     if (seconds < 60 && seconds > -60) {
       return 'Just now';
     }
