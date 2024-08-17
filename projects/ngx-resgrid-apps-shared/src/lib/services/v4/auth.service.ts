@@ -232,7 +232,7 @@ export class AuthService {
       }),
       catchError((error: any) => {
         //await this.logout();
-        //this.updateState({ authReady: true });
+        this.updateState({ authReady: true });
         return of(error);
       })
     );
