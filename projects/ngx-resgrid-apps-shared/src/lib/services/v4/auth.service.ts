@@ -231,6 +231,7 @@ export class AuthService {
         return this.refreshTokens();
       }),
       catchError((error: any) => {
+        // Commented out for now, need to figure out how to handle this
         //await this.logout();
         this.updateState({ authReady: true });
         return of(error);
