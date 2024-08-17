@@ -78,12 +78,13 @@ export class AuthService {
     return this.getTokens(user, 'password');
   }
 
-  public logout(): void {
+  public async logout(): Promise<void> {
     this.updateState({ profile: undefined, tokens: undefined });
     if (this.refreshSubscription$) {
       this.refreshSubscription$.unsubscribe();
+      this.refreshSubscription$ = undefined;
     }
-    this.removeToken();
+    return await this.removeToken();
   }
 
   public refreshTokens(): Observable<ProfileModel | null> {
@@ -143,8 +144,8 @@ export class AuthService {
     return null;
   }
 
-  private removeToken(): void {
-    this.storageService.remove('auth-tokens');
+  private async removeToken(): Promise<void> {
+    await this.storageService.remove('auth-tokens');
   }
 
   private updateState(newState: AuthStateModel): void {
@@ -230,8 +231,8 @@ export class AuthService {
         return this.refreshTokens();
       }),
       catchError((error: any) => {
-        this.logout();
-        this.updateState({ authReady: true });
+        //await this.logout();
+        //this.updateState({ authReady: true });
         return of(error);
       })
     );

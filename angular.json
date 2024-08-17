@@ -174,5 +174,8 @@
       }
     }
   },
-  "defaultProject": "ResgridAppShared"
+  "defaultProject": "ResgridAppShared",
+  "cli": {
+    "analytics": false
+  }
 }

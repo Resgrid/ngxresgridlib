@@ -65,7 +65,9 @@ export class HttpsRequestInterceptor implements HttpInterceptor {
         return next.handle(dupReq);
       }),
       catchError((err) => {
-        this.authService.logout();
+        this.authService.logout().then(() => {
+          this.logger.logDebug('User logged out due to 401 error');
+        });
         return throwError(() => err);
       })
     );

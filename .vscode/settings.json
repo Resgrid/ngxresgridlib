@@ -28,5 +28,8 @@
         "latex",
         "plaintext",
         "typescript"
+    ],
+    "cSpell.words": [
+        "Resgrid"
     ]
 }
