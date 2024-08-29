@@ -7,7 +7,7 @@ export class GroupsResult extends BaseV4Request implements ICacheable  {
     public cacheTime: number = 20160;
     public cacheSavedOn: Date | undefined = undefined;
     public cacheHitFailed: boolean = false;
-    public cacheType: number = 1;
+    public cacheType: number = 0;
 
     public Data: GroupResultData[] = [];
 }

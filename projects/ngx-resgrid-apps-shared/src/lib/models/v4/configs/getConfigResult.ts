@@ -7,7 +7,7 @@ export class GetConfigResult extends BaseV4Request implements ICacheable  {
     public cacheTime: number = 40320;
     public cacheSavedOn: Date | undefined = undefined;
     public cacheHitFailed: boolean = false;
-    public cacheType: number = 1;
+    public cacheType: number = 0;
 
     public Data: GetConfigResultData = new GetConfigResultData();
 }

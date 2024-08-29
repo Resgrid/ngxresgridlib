@@ -455,22 +455,30 @@ export class UtilsService {
 
   public blendColor(hexColor: string, magnitude: number): string
   {
-    hexColor = hexColor.replace(`#`, ``);
-    if (hexColor.length === 6) {
-        const decimalColor = parseInt(hexColor, 16);
-        let r = (decimalColor >> 16) + magnitude;
-        r > 255 && (r = 255);
-        r < 0 && (r = 0);
-        let g = (decimalColor & 0x0000ff) + magnitude;
-        g > 255 && (g = 255);
-        g < 0 && (g = 0);
-        let b = ((decimalColor >> 8) & 0x00ff) + magnitude;
-        b > 255 && (b = 255);
-        b < 0 && (b = 0);
-        return `#${(g | (b << 8) | (r << 16)).toString(16)}`;
-    } else {
-        return hexColor;
-    }
+    var usePound = false;
+		if ( hexColor[0] == "#" ) {
+			hexColor = hexColor.slice(1);
+			usePound = true;
+		}
+	
+		var num = parseInt(hexColor,16);
+	
+		var r = (num >> 16) + magnitude;
+	
+		if ( r > 255 ) r = 255;
+		else if  (r < 0) r = 0;
+	
+		var b = ((num >> 8) & 0x00FF) + magnitude;
+	
+		if ( b > 255 ) b = 255;
+		else if  (b < 0) b = 0;
+		
+		var g = (num & 0x0000FF) + magnitude;
+	
+		if ( g > 255 ) g = 255;
+		else if  ( g < 0 ) g = 0;
+	
+		return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
   }
 
   public isColorDark(color: string): boolean {
